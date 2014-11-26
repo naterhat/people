@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="9em-ZR-mpr">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
@@ -17,48 +18,41 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dP4-Cl-0g1">
-                                <rect key="frame" x="275" y="550" width="50" height="30"/>
-                                <state key="normal" title="Upload">
+                                <rect key="frame" x="145" y="249" width="49" height="30"/>
+                                <state key="normal" title="Logout">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="selectUpload:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ptY-7u-o8q"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZh-lq-yhU">
-                                <rect key="frame" x="16" y="101" width="60" height="30"/>
-                                <state key="normal" title="Facbook">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="selectFacebook:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8EK-bU-2Yh"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwl-5K-q9o">
-                                <rect key="frame" x="230" y="101" width="49" height="30"/>
-                                <state key="normal" title="Photos">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="selectPhotos:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o8z-PL-nSW"/>
+                                    <action selector="selectLogout:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LNI-kO-ehT"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1s9-I9-EB6">
-                                <rect key="frame" x="125" y="101" width="52" height="30"/>
+                                <rect key="frame" x="145" y="98" width="52" height="30"/>
                                 <state key="normal" title="Albums">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="selectAlbums:" destination="BYZ-38-t0r" eventType="touchUpInside" id="VQN-lL-8sg"/>
+                                    <action selector="selectAlbums:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IzC-wf-mrW"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VDY-mf-5kd">
-                                <rect key="frame" x="16" y="147" width="30" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qoS-a9-Xdj">
+                                <rect key="frame" x="145" y="158" width="49" height="30"/>
                                 <state key="normal" title="Me">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="selectMe:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KQ3-9j-AOO"/>
+                                    <action selector="selectAlbums:" destination="BYZ-38-t0r" eventType="touchUpInside" id="C0O-EZ-JhJ"/>
+                                    <action selector="selectMe:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PYp-Ky-w6n"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZu-n7-1gn">
+                                <rect key="frame" x="145" y="196" width="49" height="30"/>
+                                <state key="normal" title="Photos">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="selectAlbums:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g0S-dB-xn0"/>
+                                    <action selector="selectPhotos:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Uez-XE-w7O"/>
                                 </connections>
                             </button>
                         </subviews>

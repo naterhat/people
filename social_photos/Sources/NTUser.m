@@ -41,6 +41,23 @@ static NSString *const kAlbumsKey = @"albums";
     self.albums = [NSMutableArray array];
 }
 
+- (void)clearAndSave
+{
+    [self clear];
+    
+    // save
+    // . . .
+}
+
+- (BOOL)loaded
+{
+    if ( !self.identifier || self.identifier.length == 0 ) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 #pragma mark -
 #pragma mark - NSCoding Protocol
 

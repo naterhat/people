@@ -55,6 +55,7 @@
 		432DAA5C1A254C6A0090D777 /* NTPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTPhotosViewController.m; sourceTree = "<group>"; };
 		432DAA5E1A254D960090D777 /* NTUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTUser.h; sourceTree = "<group>"; };
 		432DAA5F1A254D960090D777 /* NTUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTUser.m; sourceTree = "<group>"; };
+		432DAA611A2556BA0090D777 /* NTGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTGlobal.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +171,7 @@
 		432DAA501A254C4E0090D777 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				432DAA611A2556BA0090D777 /* NTGlobal.h */,
 				432DAA511A254C4E0090D777 /* AppDelegate.h */,
 				432DAA521A254C4E0090D777 /* AppDelegate.m */,
 				432DAA531A254C4E0090D777 /* NTAlbumsTableViewController.h */,

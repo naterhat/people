@@ -9,13 +9,25 @@
 #import <Foundation/Foundation.h>
 
 @interface NTUser : NSObject<NSCoding>
-
-+ (instancetype)currentUser;
-
 @property (nonatomic) NSString *name;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSMutableArray *albums;
 
+/**
+ *  Get shared instance of current user
+ */
++ (instancetype)currentUser;
+
+/**
+ *  Clear all data
+ */
+
 - (void)clear;
+/**
+ *  Clear data and save
+ */
+- (void)clearAndSave;
+
+- (BOOL)loaded;
 
 @end

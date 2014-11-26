@@ -9,138 +9,166 @@
 #import "NTMainViewController.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "NTAlbumsTableViewController.h"
+#import "NTUser.h"
+#import "NTGlobal.h"
 
-@interface NTMainViewController () <FBLoginViewDelegate, NTAlbumsTableViewControllerDelegate>
+@interface NTMainViewController () <FBLoginViewDelegate>
 @property (nonatomic) FBLoginView *facebookLoginView;
 @property (nonatomic) NSString *userID;
 @property (nonatomic) NSArray *albums;
 @property (nonatomic) id selectedAlbum;
+@property (nonatomic) UIView *facebookContainerView;
 @end
 
 @implementation NTMainViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
     
-    FBLoginView *loginView = [[FBLoginView alloc] init];
-    [loginView setReadPermissions:@[@"user_photos"]];
-    [loginView setDelegate:self];
-    [loginView setLoginBehavior:FBSessionLoginBehaviorForcingWebView];
-    loginView.center = self.view.center;
-    [self.view addSubview:loginView];
-    _facebookLoginView = loginView;
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ( [segue.destinationViewController isKindOfClass:[NTAlbumsTableViewController class]] ) {
-        NTAlbumsTableViewController *vc = segue.destinationViewController;
-        [vc setAlbums:self.albums];
-        [vc setDelegate:self];
-    }
     
+    UIView *containerView = [[UIView alloc] initWithFrame:self.view.bounds];
+    [containerView setBackgroundColor:[UIColor colorWithWhite:0 alpha:.5f]];
+    _facebookContainerView = containerView;
+    
+    [self login];
 }
 
-- (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView
-{
-    NSLog(@"LOGGED IN");
-    [_facebookLoginView removeFromSuperview];
-}
-
-- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
-{
-    NSLog(@"LOGGED OUT");
-}
-- (IBAction)selectFacebook:(id)sender {
-    [self.view addSubview:_facebookLoginView];
-}
-
-- (IBAction)selectUpload:(id)sender {
-}
+#pragma mark -
+#pragma mark - Actions
 
 - (IBAction)selectPhotos:(id)sender {
     
 }
 
-- (IBAction)selectAlbums:(id)sender
-{
-    
-}
-
 - (IBAction)selectLogout:(id)sender
 {
-    [[FBSession activeSession] closeAndClearTokenInformation];
+    [self logout];
+    [self login];
 }
 
-- (void)logTitle:(NSString *)title content:(id)content
+- (IBAction)selectMe:(id)sender
 {
-    NSLog(@"\n%@ ====================\n%@", title, content);
+    [self retrieveUserData];
 }
 
-- (IBAction)selectMe:(id)sender {
+- (IBAction)selectAlbums:(id)sender
+{
+    [self performSegueWithIdentifier:@"albums" sender:self];
+}
+
+
+#pragma mark -
+#pragma mark - Other Functions
+
+- (void)login
+{
+    if(! _facebookLoginView ) {
+        // set login view
+        FBLoginView *loginView = [[FBLoginView alloc] init];
+        [loginView setReadPermissions:@[@"user_photos"]];
+        [loginView setDelegate:self];
+        [loginView setLoginBehavior:FBSessionLoginBehaviorForcingWebView];
+        loginView.center = self.view.center;
+        self.facebookLoginView = loginView;
+        [self.facebookContainerView addSubview:self.facebookLoginView];
+    }
+    
+    [self.view addSubview:self.facebookContainerView];
+}
+
+- (void)refreshView
+{
+    // check if have user data. If not, get user data
+    if( ! [[NTUser currentUser] loaded] ) {
+        NSLog(@"User Data not loaded");
+        [self retrieveUserData];
+        return;
+    }
+    
+    // set title name
+    self.title = [[NTUser currentUser] name];
+}
+
+- (void)retrieveUserData
+{
+    __weak typeof(self) weakself = self;
     [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NSLog(@"connection: %@", connection);
-        [self logTitle:@"me" content:result];
-        self.userID = result[@"id"];
-    }];
-}
-
-- (IBAction)selectAlbums:(id)sender {
-    if(!self.userID) return;
-    NSString *urlString = [NSString stringWithFormat:@"/%@/albums", self.userID];
-    [FBRequestConnection startWithGraphPath:urlString completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NSLog(@"connection: %@", connection);
-        [self logTitle:@"albums" content:result];
-        self.albums = result[@"data"];
+        NTLogConnection(connection, result, error);
         
-        if(self.albums.count) {
-            [self performSegueWithIdentifier:@"albums" sender:self];
-        }
+        [[NTUser currentUser] setName:result[@"name"]];
+        [[NTUser currentUser] setIdentifier:result[@"id"]];
+        
+        [weakself refreshView];
     }];
 }
 
-- (void)uploadPhotos
+- (void)logout
 {
-//    UIImage *image = [UIImage imageNamed:@"texture.jpg"];
-    NSURL *url = [[NSBundle mainBundle] URLForResource:@"texture" withExtension:@"jpg"];
-    NSData *imageData = [NSData dataWithContentsOfURL:url];
-    NSString *encodeImage = [[NSString alloc] initWithData:imageData  encoding:NSUTF8StringEncoding];
-    
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            encodeImage, @"source",
-                            nil
-                            ];
-    
-    // 1) get albums
-    // 2) select an albums
-    // 3) open image picker
-    // 4) select the images to upload
-    // 5) upload the selected images to album
-    // album id: 569065269905122"
-    
-    /* make the API call */
-    [FBRequestConnection startWithGraphPath:@"/{album-id}/photos"
-                                 parameters:params
-                                 HTTPMethod:@"POST"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              /* handle the result */
-                          }];
+    [[FBSession activeSession] closeAndClearTokenInformation];
+    [[NTUser currentUser] clearAndSave];
 }
 
 #pragma mark -
-#pragma mark - Albums Table View Controller Delegate
+#pragma mark - Facebook Login View Delegate
 
-- (void)albumsTableViewControllerDidSelectAlbum:(id)album
+- (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView
 {
-    [self.navigationController popViewControllerAnimated:YES];
-    self.selectedAlbum = album;
+    NSLog(@"LOGGED IN");
+    [self.facebookContainerView removeFromSuperview];
     
-    [self logTitle:@"selected album" content:self.selectedAlbum];
+    // get user data
+    [self retrieveUserData];
 }
+
+
+
+- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
+{
+    NSLog(@"LOGGED OUT");
+}
+
+//- (void)uploadPhotos
+//{
+////    UIImage *image = [UIImage imageNamed:@"texture.jpg"];
+//    NSURL *url = [[NSBundle mainBundle] URLForResource:@"texture" withExtension:@"jpg"];
+//    NSData *imageData = [NSData dataWithContentsOfURL:url];
+//    NSString *encodeImage = [[NSString alloc] initWithData:imageData  encoding:NSUTF8StringEncoding];
+//    
+//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+//                            encodeImage, @"source",
+//                            nil
+//                            ];
+//    
+//    // 1) get albums
+//    // 2) select an albums
+//    // 3) open image picker
+//    // 4) select the images to upload
+//    // 5) upload the selected images to album
+//    // album id: 569065269905122"
+//    
+//    /* make the API call */
+//    [FBRequestConnection startWithGraphPath:@"/{album-id}/photos"
+//                                 parameters:params
+//                                 HTTPMethod:@"POST"
+//                          completionHandler:^(
+//                                              FBRequestConnection *connection,
+//                                              id result,
+//                                              NSError *error
+//                                              ) {
+//                              NTLogConnection(connection, result, error);
+//                              /* handle the result */
+//                          }];
+//}
+
+//#pragma mark -
+//#pragma mark - Albums Table View Controller Delegate
+//
+//- (void)albumsTableViewControllerDidSelectAlbum:(id)album
+//{
+//    [self.navigationController popViewControllerAnimated:YES];
+//    self.selectedAlbum = album;
+//    
+//    NTLogTitleMessage(@"selected album", self.selectedAlbum);
+//}
 
 @end
