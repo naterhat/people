@@ -41,7 +41,6 @@ static NSString * const reuseIdentifier = @"cell";
     return 1;
 }
 
-
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.photos.count;
 }
@@ -60,24 +59,32 @@ static NSString * const reuseIdentifier = @"cell";
     // find the lowest res
     id photo = self.photos[indexPath.row];
     
-    id selectedImage;
+    // find the smallest image
+    id smallestImage;
     NSUInteger minHeight = SIZE_MAX;
     for (id image in photo[@"images"]) {
         NSUInteger height = [image[@"height"] integerValue];
+        // check height
         if (height < minHeight ) {
             minHeight = height;
-            selectedImage = image;
+            smallestImage = image;
         }
     }
     
-    if( selectedImage ) {
-        __block NSString *source = selectedImage[@"source"];
+    if( smallestImage ) {
+        
+        // retrieve image from web by async
+        __block NSString *source = smallestImage[@"source"];
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0) , ^{
             
+            // get image data
             NSURL *url= [NSURL URLWithString:source];
             NSData *data = [NSData dataWithContentsOfURL:url];
             
+            // get back to main thread
             dispatch_async(dispatch_get_main_queue(), ^{
+                
+                // load image to image view.
                 [imageView setImage:[[UIImage alloc] initWithData:data]];
             });
         });
@@ -112,12 +119,7 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)openPhotos
 {
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    
-    [picker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    [picker setDelegate:self];
-    
-    [self presentViewController:picker animated:YES completion:nil];
+    [self performSegueWithIdentifier:@"photos" sender:self];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
