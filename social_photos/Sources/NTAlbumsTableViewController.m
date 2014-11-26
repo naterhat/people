@@ -7,11 +7,13 @@
 //
 
 #import "NTAlbumsTableViewController.h"
+#import "NTAlbumCollectionViewController.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "NTUser.h"
 #import "NTGlobal.h"
 
 @interface NTAlbumsTableViewController ()
+@property (nonatomic) id selectedAlbum;
 @end
 
 @implementation NTAlbumsTableViewController
@@ -23,6 +25,12 @@
     if (! _albums) _albums = [NSMutableArray array];
     
     [self retrieveAlbums];
+}
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NTAlbumCollectionViewController *vc = (id)segue.destinationViewController;
+    [vc setAlbum:self.selectedAlbum];
 }
 
 #pragma mark - Table view data source
@@ -50,9 +58,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // dispatch back to the main view controller and pass the selected album.
-//    if ([self.delegate respondsToSelector:@selector(albumsTableViewControllerDidSelectAlbum:)]) {
-//        [self.delegate albumsTableViewControllerDidSelectAlbum:self.albums[indexPath.row]];
-//    }
+    self.selectedAlbum = self.albums[indexPath.row];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    [self performSegueWithIdentifier:@"album" sender:self];
 }
 
 - (void)uploadPhotos
@@ -106,40 +116,5 @@
 }
 
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

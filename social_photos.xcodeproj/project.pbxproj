@@ -14,12 +14,13 @@
 		432DAA371A2475380090D777 /* social_photosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA361A2475380090D777 /* social_photosTests.m */; };
 		432DAA431A24765D0090D777 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DAA411A24765D0090D777 /* FacebookSDK.framework */; };
 		432DAA461A2479190090D777 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA451A2479190090D777 /* README.md */; };
-		432DAA571A254C4E0090D777 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 432DAA4F1A254C4E0090D777 /* texture.jpg */; };
 		432DAA581A254C4E0090D777 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA521A254C4E0090D777 /* AppDelegate.m */; };
 		432DAA591A254C4E0090D777 /* NTAlbumsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA541A254C4E0090D777 /* NTAlbumsTableViewController.m */; };
 		432DAA5A1A254C4E0090D777 /* NTMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA561A254C4E0090D777 /* NTMainViewController.m */; };
 		432DAA5D1A254C6A0090D777 /* NTPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA5C1A254C6A0090D777 /* NTPhotosViewController.m */; };
 		432DAA601A254D960090D777 /* NTUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA5F1A254D960090D777 /* NTUser.m */; };
+		432DAA661A25638E0090D777 /* NTAlbumCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA651A25638E0090D777 /* NTAlbumCollectionViewController.m */; };
+		432DAA681A25665C0090D777 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 432DAA671A25665C0090D777 /* texture.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +45,6 @@
 		432DAA361A2475380090D777 /* social_photosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = social_photosTests.m; sourceTree = "<group>"; };
 		432DAA411A24765D0090D777 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		432DAA451A2479190090D777 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		432DAA4F1A254C4E0090D777 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 		432DAA511A254C4E0090D777 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		432DAA521A254C4E0090D777 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		432DAA531A254C4E0090D777 /* NTAlbumsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTAlbumsTableViewController.h; sourceTree = "<group>"; };
@@ -56,6 +56,9 @@
 		432DAA5E1A254D960090D777 /* NTUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTUser.h; sourceTree = "<group>"; };
 		432DAA5F1A254D960090D777 /* NTUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTUser.m; sourceTree = "<group>"; };
 		432DAA611A2556BA0090D777 /* NTGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTGlobal.h; sourceTree = "<group>"; };
+		432DAA641A25638E0090D777 /* NTAlbumCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTAlbumCollectionViewController.h; sourceTree = "<group>"; };
+		432DAA651A25638E0090D777 /* NTAlbumCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTAlbumCollectionViewController.m; sourceTree = "<group>"; };
+		432DAA671A25665C0090D777 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,7 +152,6 @@
 			children = (
 				432DAA4D1A254C4E0090D777 /* Fonts */,
 				432DAA4E1A254C4E0090D777 /* Images */,
-				432DAA4F1A254C4E0090D777 /* texture.jpg */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -164,6 +166,7 @@
 		432DAA4E1A254C4E0090D777 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				432DAA671A25665C0090D777 /* texture.jpg */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -182,6 +185,8 @@
 				432DAA5C1A254C6A0090D777 /* NTPhotosViewController.m */,
 				432DAA5E1A254D960090D777 /* NTUser.h */,
 				432DAA5F1A254D960090D777 /* NTUser.m */,
+				432DAA641A25638E0090D777 /* NTAlbumCollectionViewController.h */,
+				432DAA651A25638E0090D777 /* NTAlbumCollectionViewController.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -270,7 +275,7 @@
 				432DAA261A2475380090D777 /* Main.storyboard in Resources */,
 				432DAA2B1A2475380090D777 /* LaunchScreen.xib in Resources */,
 				432DAA281A2475380090D777 /* Images.xcassets in Resources */,
-				432DAA571A254C4E0090D777 /* texture.jpg in Resources */,
+				432DAA681A25665C0090D777 /* texture.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +299,7 @@
 				432DAA1D1A2475380090D777 /* main.m in Sources */,
 				432DAA581A254C4E0090D777 /* AppDelegate.m in Sources */,
 				432DAA5A1A254C4E0090D777 /* NTMainViewController.m in Sources */,
+				432DAA661A25638E0090D777 /* NTAlbumCollectionViewController.m in Sources */,
 				432DAA5D1A254C6A0090D777 /* NTPhotosViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
