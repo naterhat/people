@@ -11,7 +11,7 @@
 #import "NTUser.h"
 #import "NTGlobal.h"
 
-@interface NTAlbumCollectionViewController ()
+@interface NTAlbumCollectionViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic) NSMutableArray *photos;
 @end
 
@@ -24,14 +24,14 @@ static NSString * const reuseIdentifier = @"cell";
     
     _photos = [NSMutableArray array];
     
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
     // Do any additional setup after loading the view.
     [self retrievePhotos];
+    
+    UIBarButtonItem *uploadButton = [[UIBarButtonItem alloc] initWithTitle:@"UPLOAD" style:UIBarButtonItemStylePlain target:self action:@selector(openPhotos)];
+    [self.navigationItem setRightBarButtonItem:uploadButton];
 }
 
 
@@ -79,18 +79,19 @@ static NSString * const reuseIdentifier = @"cell";
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [imageView setImage:[[UIImage alloc] initWithData:data]];
-//                 [imageView setImage:[UIImage imageNamed:@"texture.jpg"]];
             });
         });
-        
-        
-        
     }
-    
-    
     
     return cell;
 }
+
+
+
+#pragma mark <UICollectionViewDelegate>
+
+#pragma mark -
+#pragma mark - Other Functions
 
 - (void)retrievePhotos
 {
@@ -109,35 +110,24 @@ static NSString * const reuseIdentifier = @"cell";
     }];
 }
 
-#pragma mark <UICollectionViewDelegate>
-
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
+- (void)openPhotos
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    
+    [picker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    [picker setDelegate:self];
+    
+    [self presentViewController:picker animated:YES completion:nil];
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    NTLogTitleMessage(@"photo", info);
 }
-*/
 
 @end

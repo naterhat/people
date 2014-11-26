@@ -1,5 +1,5 @@
 //
-//  NTMainViewController.h
+//  NTPhotosCollectionViewController.h
 //  social_photos
 //
 //  Created by Nate on 11/25/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NTPhotosViewController : UIViewController
+@interface NTPhotosCollectionViewController : UICollectionViewController
 
 @end
