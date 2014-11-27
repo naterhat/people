@@ -26,6 +26,8 @@
     // initialize if not.
     if (! _albums) _albums = [NSMutableArray array];
     
+    [self setTitle:@"ALBUMS"];
+    
     [self retrieveAlbums];
 }
 
@@ -70,7 +72,8 @@
 #pragma mark -
 #pragma mark - Other Functions
 
-- (void)retrieveAlbums {
+- (void)retrieveAlbums
+{
     __weak typeof(self) weakself = self;
     [[NTSocialInterface sharedInstance] retrieveAlbumsWithHandler:^(NSArray *albums, NSError *error) {
         if(error) {

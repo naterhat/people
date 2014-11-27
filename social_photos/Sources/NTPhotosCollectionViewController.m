@@ -35,6 +35,8 @@ static NSString * const reuseIdentifier = @"cell";
     _photos = [NSMutableArray array];
     _photoThumbnails = [NSMutableArray array];
     
+    [self setTitle:@"PHOTOS"];
+    
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     

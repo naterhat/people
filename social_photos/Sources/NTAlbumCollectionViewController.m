@@ -27,6 +27,8 @@ static NSString * const reuseIdentifier = @"cell";
     
     _photos = [NSMutableArray array];
     
+    [self setTitle:self.album.name];
+    
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
