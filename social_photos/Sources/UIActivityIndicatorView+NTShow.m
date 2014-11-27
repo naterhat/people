@@ -48,7 +48,7 @@
 
 + (UIView *)rootView
 {
-    return [[[[UIApplication sharedApplication] keyWindow] rootViewController] view];
+    return [[[[[UIApplication sharedApplication] windows] objectAtIndex:0] rootViewController] view];
 }
 
 @end

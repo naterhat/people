@@ -70,12 +70,14 @@
         [loginView setPublishPermissions:@[@"publish_actions"]];
         [loginView setDelegate:self];
         [loginView setLoginBehavior:FBSessionLoginBehaviorForcingWebView];
-        loginView.center = self.view.center;
         self.facebookLoginView = loginView;
         [self.facebookContainerView addSubview:self.facebookLoginView];
     }
     
-    [self.view addSubview:self.facebookContainerView];
+    UIView *rootView = [[[[[UIApplication sharedApplication] windows] objectAtIndex:0] rootViewController] view];
+    [self.facebookContainerView setFrame:rootView.bounds];
+    [self.facebookLoginView setCenter:self.facebookContainerView.center];
+    [rootView addSubview:self.facebookContainerView];
 }
 
 - (void)refreshView

@@ -17,7 +17,7 @@
 static CGFloat const kDeselectValue = 0.4f;
 static CGFloat const kSelectValue = 1.0f;
 
-@interface NTPhotosCollectionViewController ()
+@interface NTPhotosCollectionViewController ()<UIAlertViewDelegate>
 @property (nonatomic) NSMutableArray *photos;
 @property (nonatomic) NSMutableArray *photoThumbnails;
 @property (nonatomic) UIBarButtonItem *sendButton;
@@ -52,6 +52,15 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)retrievePhotosFromAlbum
 {
+    if( [ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied ) {
+        NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
+        [[[UIAlertView alloc] initWithTitle:nil
+                                    message:message
+                                   delegate:self
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+        return;
+    }
     
     // Source been copied and modified from the version of this link
     // http://stackoverflow.com/questions/9705478/get-list-of-all-photo-albums-and-thumbnails-for-each-album
@@ -193,7 +202,14 @@ static NSString * const reuseIdentifier = @"cell";
     [imageView setAlpha:kSelectValue];
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark -
+#pragma mark - UIAlertView Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // denied photos permission should be the only one to call this method
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 
 @end
