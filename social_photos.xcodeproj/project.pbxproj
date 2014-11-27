@@ -25,6 +25,7 @@
 		432DAA701A263ECE0090D777 /* UIAlertView+NTShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA6F1A263ECE0090D777 /* UIAlertView+NTShow.m */; };
 		432DAA731A2641B00090D777 /* UIActivityIndicatorView+NTShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA721A2641B00090D777 /* UIActivityIndicatorView+NTShow.m */; };
 		43EE60971A26F36C001855D6 /* NTPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 43EE60961A26F36C001855D6 /* NTPhoto.m */; };
+		43EE60991A2701CE001855D6 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EE60981A2701CE001855D6 /* Photos.framework */; };
 		43F52A971A26E93100245C07 /* NTSocialInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F52A961A26E93100245C07 /* NTSocialInterface.m */; };
 		43F52A9A1A26E94900245C07 /* NTAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F52A991A26E94900245C07 /* NTAlbum.m */; };
 /* End PBXBuildFile section */
@@ -72,6 +73,7 @@
 		432DAA721A2641B00090D777 /* UIActivityIndicatorView+NTShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActivityIndicatorView+NTShow.m"; sourceTree = "<group>"; };
 		43EE60951A26F36C001855D6 /* NTPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTPhoto.h; sourceTree = "<group>"; };
 		43EE60961A26F36C001855D6 /* NTPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTPhoto.m; sourceTree = "<group>"; };
+		43EE60981A2701CE001855D6 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		43F52A951A26E93100245C07 /* NTSocialInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTSocialInterface.h; sourceTree = "<group>"; };
 		43F52A961A26E93100245C07 /* NTSocialInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTSocialInterface.m; sourceTree = "<group>"; };
 		43F52A981A26E94900245C07 /* NTAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTAlbum.h; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43EE60991A2701CE001855D6 /* Photos.framework in Frameworks */,
 				432DAA6D1A2573440090D777 /* AssetsLibrary.framework in Frameworks */,
 				432DAA431A24765D0090D777 /* FacebookSDK.framework in Frameworks */,
 			);
@@ -160,6 +163,7 @@
 		432DAA441A2476640090D777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43EE60981A2701CE001855D6 /* Photos.framework */,
 				432DAA6C1A2573440090D777 /* AssetsLibrary.framework */,
 				432DAA411A24765D0090D777 /* FacebookSDK.framework */,
 			);

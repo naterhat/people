@@ -13,6 +13,7 @@
 #import "UIAlertView+NTShow.h"
 #import "UIActivityIndicatorView+NTShow.h"
 #import "NTSocialInterface.h"
+#import <Photos/Photos.h>
 
 static CGFloat const kDeselectValue = 0.4f;
 static CGFloat const kSelectValue = 1.0f;
@@ -50,7 +51,7 @@ static NSString * const reuseIdentifier = @"cell";
     [self retrievePhotosFromAlbum];
 }
 
-- (void)retrievePhotosFromAlbum
+- (void)retrievePhotosFromAlbumOfIOS7
 {
     if( [ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied ) {
         NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
@@ -105,6 +106,62 @@ static NSString * const reuseIdentifier = @"cell";
     }];
 }
 
+- (void)retrievePhotosFromAlbumOfIOS8
+{
+    
+    if( [PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied ) {
+        NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
+        [[[UIAlertView alloc] initWithTitle:nil
+                                    message:message
+                                   delegate:self
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+    [option setSynchronous:YES];
+    
+    PHFetchResult *result = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
+    [result enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NTLogTitleMessage(@"photo", obj);
+        
+        [[PHImageManager defaultManager] requestImageForAsset:obj targetSize:CGSizeMake([obj pixelWidth], [obj pixelHeight]) contentMode:PHImageContentModeDefault options:option resultHandler:^(UIImage *result, NSDictionary *info) {
+            NSLog(@"info: %@ / result: %@", info, result);
+            [self.photos addObject:result];
+        }];
+    }];
+    
+    NSLog(@"get thumbnails");
+    
+    [result enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NTLogTitleMessage(@"photo", obj);
+        [[PHImageManager defaultManager] requestImageForAsset:obj targetSize:CGSizeMake(150, 150) contentMode:PHImageContentModeAspectFit options:option resultHandler:^(UIImage *result, NSDictionary *info) {
+            NSLog(@"info: %@ / result: %@", info, result);
+            [self.photoThumbnails addObject:result];
+        }];
+        
+    }];
+    
+    
+    PH
+    
+    
+    
+    [[self collectionView] reloadData];
+    
+}
+
+- (void)retrievePhotosFromAlbum
+{
+    Class PHPhotoLibraryClass = NSClassFromString(@"PHPhotoLibrary");
+    if (  PHPhotoLibraryClass ) {
+        [self retrievePhotosFromAlbumOfIOS8];
+    } else {
+        [self retrievePhotosFromAlbumOfIOS7];
+    }
+}
+
 - (void)send
 {
     if( self.collectionView.indexPathsForSelectedItems.count == 0 ) {
@@ -115,7 +172,7 @@ static NSString * const reuseIdentifier = @"cell";
     // get selected photos
     NSMutableArray *selectedImages = [NSMutableArray array];
     for (NSIndexPath *indexPath in self.collectionView.indexPathsForSelectedItems) {
-        [selectedImages addObject: self.photoThumbnails[indexPath.row]];
+        [selectedImages addObject: self.photos[indexPath.row]];
     }
     
     // check if any photos to upload
