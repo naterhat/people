@@ -10,6 +10,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "NTUser.h"
 #import "NTGlobal.h"
+#import "NTPhotosCollectionViewController.h"
 
 @interface NTAlbumCollectionViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic) NSMutableArray *photos;
@@ -32,6 +33,12 @@ static NSString * const reuseIdentifier = @"cell";
     
     UIBarButtonItem *uploadButton = [[UIBarButtonItem alloc] initWithTitle:@"UPLOAD" style:UIBarButtonItemStylePlain target:self action:@selector(openPhotos)];
     [self.navigationItem setRightBarButtonItem:uploadButton];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NTPhotosCollectionViewController *vc = (id)segue.destinationViewController;
+    [vc setAlbum:self.album];
 }
 
 
@@ -105,8 +112,8 @@ static NSString * const reuseIdentifier = @"cell";
     if(!self.album) return;
     
     __weak typeof(self) weakself = self;
-    NSString *urlString = [NSString stringWithFormat:@"/%@?fields=photos,id,name", self.album[@"id"]];
-    [FBRequestConnection startWithGraphPath:urlString completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+    NSString *graphPath = [NSString stringWithFormat:@"/%@?fields=photos,id,name", self.album[@"id"]];
+    [FBRequestConnection startWithGraphPath:graphPath completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         NTLogConnection(connection, result, error);
         
         // set data

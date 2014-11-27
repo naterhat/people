@@ -8,10 +8,20 @@
 
 #import "NTPhotosCollectionViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import "NTGlobal.h"
+#import "UIAlertView+NTShow.h"
+#import "UIActivityIndicatorView+NTShow.h"
+
+static CGFloat const kDeselectValue = 0.4f;
+static CGFloat const kSelectValue = 1.0f;
 
 @interface NTPhotosCollectionViewController ()
 @property (nonatomic) NSMutableArray *photos;
+@property (nonatomic) NSMutableArray *photoThumbnails;
 @property (nonatomic) UIBarButtonItem *sendButton;
+@property (nonatomic) NSInteger uploadRequestCount;
+@property (nonatomic) NSInteger uploadRequestErrorCount;
 @end
 
 @implementation NTPhotosCollectionViewController
@@ -22,6 +32,7 @@ static NSString * const reuseIdentifier = @"cell";
     [super viewDidLoad];
     
     _photos = [NSMutableArray array];
+    _photoThumbnails = [NSMutableArray array];
     
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
@@ -35,55 +46,6 @@ static NSString * const reuseIdentifier = @"cell";
     // Do any additional setup after loading the view.
     [self retrievePhotosFromAlbum];
 }
-
-#pragma mark <UICollectionViewDataSource>
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
-}
-
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.photos.count;
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
-    
-    // Configure the cell
-    UIImageView *imageView = (id)[cell viewWithTag:1];
-    if ( ! imageView ) {
-        imageView =[[UIImageView alloc] initWithFrame:cell.bounds];
-        [imageView setTag:1];
-        [cell.contentView addSubview:imageView];
-    }
-    
-    UIImage *image = self.photos[indexPath.row];
-    [imageView setImage:image];
-    
-    [imageView setAlpha: cell.selected ? .5f : 1.0f];
-    
-    return cell;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UIImageView *imageView = (id)[[collectionView cellForItemAtIndexPath:indexPath] viewWithTag:1];
-    if ( !imageView ) return;
-    
-    [imageView setAlpha:1];
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UIImageView *imageView = (id)[[collectionView cellForItemAtIndexPath:indexPath] viewWithTag:1];
-    if ( !imageView ) return;
-    
-    [imageView setAlpha:.5];
-}
-
-#pragma mark <UICollectionViewDelegate>
 
 - (void)retrievePhotosFromAlbum
 {
@@ -110,22 +72,17 @@ static NSString * const reuseIdentifier = @"cell";
                 NSString *type = [alAsset valueForProperty:ALAssetPropertyType];
                 
                 if([type isEqualToString:@"ALAssetTypePhoto"]) {
-                    NSURL *url = [alAsset valueForProperty:ALAssetPropertyAssetURL];
-                    NSLog(@"url: %@", url);
+                    
                     ALAssetRepresentation *representation = [alAsset defaultRepresentation];
+                    
+                    // get the images from assets
                     UIImage *latestPhoto = [UIImage imageWithCGImage:[representation fullScreenImage]];
-                    
-                    
                     UIImage *latestPhotoThumbnail =  [UIImage imageWithCGImage:[alAsset thumbnail]];
                     
-                    [weakself.photos addObject:latestPhotoThumbnail];
+                    // save images and thumbnails to array to use later.
+                    [weakself.photos addObject:latestPhoto];
+                    [weakself.photoThumbnails addObject:latestPhotoThumbnail];
                 }
-                
-                // Stop the enumerations
-//                *stop = YES; *innerStop = YES;
-                
-                // Do something interesting with the AV asset.
-                //[self sendTweet:latestPhoto];
             }
         }];
         
@@ -138,36 +95,135 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)send
 {
+    if( self.collectionView.indexPathsForSelectedItems.count == 0 ) {
+        [UIAlertView showAlertWithTitle:@"Error" andMessage:@"Need to select at least 1 photo." cancelTitle:nil];
+        return;
+    }
     
+    // get selected photos
+    NSMutableArray *selectedImages = [NSMutableArray array];
+    for (NSIndexPath *indexPath in self.collectionView.indexPathsForSelectedItems) {
+        [selectedImages addObject: self.photoThumbnails[indexPath.row]];
+    }
+    
+    // check if any photos to upload
+    if ( ! selectedImages.count ) {
+        NSLog(@"Must select at least 1 image");
+        return;
+    }
+    
+    // initialize iVars
+    NSString *graphPath = [NSString stringWithFormat:@"/%@/photos", self.album[@"id"]];
+    NSString *method = @"POST";
+    
+    // create array of upload photo requests
+    __weak typeof(self) weakself = self;
+    FBRequestConnection *connection = [[FBRequestConnection alloc] init];
+    for (UIImage *image in selectedImages) {
+        
+        // create and add request
+        NSDictionary *params = @{@"source": image};
+        FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:params HTTPMethod:method];
+        [connection addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            NTLogConnection(connection, result, error);
+            if( error ) {
+                weakself.uploadRequestErrorCount++;
+            }
+            
+            weakself.uploadRequestCount--;
+            
+            // completed all the request
+            if (weakself.uploadRequestCount == 0) {
+                
+                // reset count
+                weakself.uploadRequestCount = 0;
+                
+                // hide indicator
+                [UIActivityIndicatorView hideIndicator];
+                
+                if ( weakself.uploadRequestErrorCount ) {
+                    // display error
+                    [UIAlertView showAlertWithTitle:@"Error" andMessage:@"There was an error uploading images" cancelTitle:nil];
+                    weakself.uploadRequestErrorCount = 0;
+                    
+                    
+                } else {
+                    [UIAlertView showAlertWithTitle:@"Success" andMessage:@"Next step, need to approve the upload photos over facebook.com." cancelTitle:nil];
+                    
+                    // no error, go back to album view
+                    [weakself.navigationController popViewControllerAnimated:YES];
+                }
+            }
+            
+        }];
+        
+        // increase request count
+        self.uploadRequestCount++;
+    }
+    
+    [UIActivityIndicatorView showIndicator];
+    [connection start];
 }
 
 
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
+#pragma mark <UICollectionViewDataSource>
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
 }
 
 
-
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.photos.count;
 }
 
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    
+    
+    // Configure the cell
+    UIImageView *imageView = (id)[cell viewWithTag:1];
+    if ( ! imageView ) {
+        imageView =[[UIImageView alloc] initWithFrame:cell.bounds];
+        [imageView setTag:1];
+        [cell.contentView addSubview:imageView];
+    }
+    
+    // set image
+    UIImage *image = self.photoThumbnails[indexPath.row];
+    [imageView setImage:image];
+    
+    // set the highlight color
+    [imageView setAlpha: cell.selected ? kSelectValue : kDeselectValue];
+    
+    return cell;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIImageView *imageView = (id)[[collectionView cellForItemAtIndexPath:indexPath] viewWithTag:1];
+    if ( !imageView ) return;
+    
+    [imageView setAlpha:kDeselectValue];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    // validate to select at most 4
+    if( collectionView.indexPathsForSelectedItems.count > 4 ) {
+        [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+        [UIAlertView showAlertWithTitle:@"Error" andMessage:@"Can only post at most 4 photos." cancelTitle:nil];
+        return;
+    }
+    
+    // get image view and select it
+    UIImageView *imageView = (id)[[collectionView cellForItemAtIndexPath:indexPath] viewWithTag:1];
+    if ( !imageView ) return;
+    
+    [imageView setAlpha:kSelectValue];
 }
-*/
+
+#pragma mark <UICollectionViewDelegate>
+
 
 @end

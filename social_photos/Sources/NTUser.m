@@ -70,7 +70,6 @@ static NSString *const kAlbumsKey = @"albums";
         // first check if exist. if doesn't, assign a new array before adding to the mutable array
         id albums = [aDecoder decodeObjectForKey:kAlbumsKey];
         if( !albums ) albums = @[];
-        _albums = [NSMutableArray arrayWithArray:albums];
     } return self;
 }
 
@@ -78,7 +77,20 @@ static NSString *const kAlbumsKey = @"albums";
 {
     [aCoder encodeObject:self.name forKey:kNameKey];
     [aCoder encodeObject:self.identifier forKey:kIdentifierKey];
-    [aCoder encodeObject:self.albums forKey:kAlbumsKey];
+}
+
+@end
+
+
+
+@implementation  NTUser (Facebook)
+
+- (instancetype)initWithFacebookObject:(id)obj
+{
+    if(self = [super init] ) {
+        _name = obj[@"name"];
+        _identifier = obj[@"id"];
+    } return self;
 }
 
 @end

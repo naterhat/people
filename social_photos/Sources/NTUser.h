@@ -31,3 +31,7 @@
 - (BOOL)loaded;
 
 @end
+
+@interface NTUser (Facebook)
+- (instancetype)initWithFacebookObject:(id)obj;
+@end

@@ -1,5 +1,5 @@
 //
-//  NTPhotosCollectionViewController.h
+//  ViewController.h
 //  social_photos
 //
 //  Created by Nate on 11/25/14.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NTPhotosCollectionViewController : UICollectionViewController
-@property (nonatomic) id album;
+@interface NTHomeViewController : UIViewController
+
+
 @end
+
