@@ -11,6 +11,8 @@
 #import "NTUser.h"
 #import "NTGlobal.h"
 #import "NTPhotosCollectionViewController.h"
+#import "NTSocialInterface.h"
+#import "UIAlertView+NTShow.h"
 
 @interface NTAlbumCollectionViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic) NSMutableArray *photos;
@@ -63,23 +65,12 @@ static NSString * const reuseIdentifier = @"cell";
         [cell.contentView addSubview:imageView];
     }
     
-    // find the lowest res
-    id photo = self.photos[indexPath.row];
+    NTPhoto *photo = self.photos[indexPath.row];
     
-    // find the smallest image
-    id smallestImage;
-    NSUInteger minHeight = SIZE_MAX;
-    for (id image in photo[@"images"]) {
-        NSUInteger height = [image[@"height"] integerValue];
-        // check height
-        if (height < minHeight ) {
-            minHeight = height;
-            smallestImage = image;
-        }
-    }
+    id smallestImage = [photo smallestImage];
     
+    // display the smallest image. Didn't have chance to conver the image dictioanry to NSObject.
     if( smallestImage ) {
-        
         // retrieve image from web by async
         __block NSString *source = smallestImage[@"source"];
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0) , ^{
@@ -100,28 +91,24 @@ static NSString * const reuseIdentifier = @"cell";
     return cell;
 }
 
-
-
-#pragma mark <UICollectionViewDelegate>
-
 #pragma mark -
 #pragma mark - Other Functions
 
 - (void)retrievePhotos
 {
-    if(!self.album) return;
-    
     __weak typeof(self) weakself = self;
-    NSString *graphPath = [NSString stringWithFormat:@"/%@?fields=photos,id,name", self.album[@"id"]];
-    [FBRequestConnection startWithGraphPath:graphPath completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NTLogConnection(connection, result, error);
-        
-        // set data
-        weakself.photos = result[@"photos"][@"data"];
-        
-        // reload table view
-        [weakself.collectionView reloadData];
-    }];
+    
+    [[NTSocialInterface sharedInstance] retrievePhotosWithHandler:^(NSArray *photos, NSError *error) {
+        if (error) {
+            [UIAlertView showAlertWithTitle:@"Error" andMessage:error.localizedDescription cancelTitle:nil];
+        } else {
+            // set data
+            weakself.photos = [NSMutableArray arrayWithArray:photos];
+            
+            // reload collection view
+            [weakself.collectionView reloadData];
+        }
+    } fromAlbum:self.album forInterfaceType:NTSocialInterfaceTypeFacebook];
 }
 
 - (void)openPhotos

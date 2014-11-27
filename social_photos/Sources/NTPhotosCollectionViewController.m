@@ -12,6 +12,7 @@
 #import "NTGlobal.h"
 #import "UIAlertView+NTShow.h"
 #import "UIActivityIndicatorView+NTShow.h"
+#import "NTSocialInterface.h"
 
 static CGFloat const kDeselectValue = 0.4f;
 static CGFloat const kSelectValue = 1.0f;
@@ -112,57 +113,24 @@ static NSString * const reuseIdentifier = @"cell";
         return;
     }
     
-    // initialize iVars
-    NSString *graphPath = [NSString stringWithFormat:@"/%@/photos", self.album[@"id"]];
-    NSString *method = @"POST";
-    
-    // create array of upload photo requests
-    __weak typeof(self) weakself = self;
-    FBRequestConnection *connection = [[FBRequestConnection alloc] init];
-    for (UIImage *image in selectedImages) {
-        
-        // create and add request
-        NSDictionary *params = @{@"source": image};
-        FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:params HTTPMethod:method];
-        [connection addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            NTLogConnection(connection, result, error);
-            if( error ) {
-                weakself.uploadRequestErrorCount++;
-            }
-            
-            weakself.uploadRequestCount--;
-            
-            // completed all the request
-            if (weakself.uploadRequestCount == 0) {
-                
-                // reset count
-                weakself.uploadRequestCount = 0;
-                
-                // hide indicator
-                [UIActivityIndicatorView hideIndicator];
-                
-                if ( weakself.uploadRequestErrorCount ) {
-                    // display error
-                    [UIAlertView showAlertWithTitle:@"Error" andMessage:@"There was an error uploading images" cancelTitle:nil];
-                    weakself.uploadRequestErrorCount = 0;
-                    
-                    
-                } else {
-                    [UIAlertView showAlertWithTitle:@"Success" andMessage:@"Next step, need to approve the upload photos over facebook.com." cancelTitle:nil];
-                    
-                    // no error, go back to album view
-                    [weakself.navigationController popViewControllerAnimated:YES];
-                }
-            }
-            
-        }];
-        
-        // increase request count
-        self.uploadRequestCount++;
-    }
-    
+    // show indicator
     [UIActivityIndicatorView showIndicator];
-    [connection start];
+    
+    __weak typeof(self) weakself = self;
+    [[NTSocialInterface sharedInstance] uploadImages:selectedImages toAlbum:self.album handler:^(BOOL sucess, NSError *error) {
+        // hide indicator
+        [UIActivityIndicatorView hideIndicator];
+        
+        if ( error ) {
+            // display error
+            [UIAlertView showAlertWithTitle:@"Error" andMessage:error.localizedDescription cancelTitle:nil];
+        } else {
+            [UIAlertView showAlertWithTitle:@"Success" andMessage:@"Next step, need to approve the upload photos over facebook.com." cancelTitle:nil];
+            
+            // no error, go back to album view
+            [weakself.navigationController popViewControllerAnimated:YES];
+        }
+    } forInterfaceType:NTSocialInterfaceTypeFacebook];
 }
 
 

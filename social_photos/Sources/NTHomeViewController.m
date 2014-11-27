@@ -94,30 +94,30 @@
 - (void)retrieveUserData
 {
     __weak typeof(self) weakself = self;
-    [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NTLogConnection(connection, result, error);
-        
-        [[NTUser currentUser] setName:result[@"name"]];
-        [[NTUser currentUser] setIdentifier:result[@"id"]];
-        
-        [weakself refreshView];
-    }];
-    
-    [[NTSocialInterface sharedInstance] retrieveUserForInterfaceType:NTSocialInterfaceTypeFacebook retrieveUserHanlder:^(NTUser *user, NSError *error) {
+//    [[FBRequest requestForMe] startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//        NTLogConnection(connection, result, error);
+//        
+//        [[NTUser currentUser] setName:result[@"name"]];
+//        [[NTUser currentUser] setIdentifier:result[@"id"]];
+//        
+//        [weakself refreshView];
+//    }];
+    [[NTSocialInterface sharedInstance] retrieveUserWithHandler:^(NTUser *user, NSError *error) {
         if(error) {
             [UIAlertView showAlertWithTitle:@"Error" andMessage:@"Problem of connecting with facebook" cancelTitle:nil];
         } else {
+            [[NTUser currentUser] setName:user.name];
+            [[NTUser currentUser] setIdentifier:user.identifier];
             
+            [weakself refreshView];
         }
-    }];
-    
+    } forInterfaceType:NTSocialInterfaceTypeFacebook];
     
 }
 
 - (void)logout
 {
-    [[FBSession activeSession] closeAndClearTokenInformation];
-    [[NTUser currentUser] clearAndSave];
+    [[NTSocialInterface sharedInstance] logoutFromInterfaceType:NTSocialInterfaceTypeFacebook];
 }
 
 #pragma mark -

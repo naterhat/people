@@ -24,6 +24,7 @@
 		432DAA6D1A2573440090D777 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DAA6C1A2573440090D777 /* AssetsLibrary.framework */; };
 		432DAA701A263ECE0090D777 /* UIAlertView+NTShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA6F1A263ECE0090D777 /* UIAlertView+NTShow.m */; };
 		432DAA731A2641B00090D777 /* UIActivityIndicatorView+NTShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA721A2641B00090D777 /* UIActivityIndicatorView+NTShow.m */; };
+		43EE60971A26F36C001855D6 /* NTPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 43EE60961A26F36C001855D6 /* NTPhoto.m */; };
 		43F52A971A26E93100245C07 /* NTSocialInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F52A961A26E93100245C07 /* NTSocialInterface.m */; };
 		43F52A9A1A26E94900245C07 /* NTAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F52A991A26E94900245C07 /* NTAlbum.m */; };
 /* End PBXBuildFile section */
@@ -69,6 +70,8 @@
 		432DAA6F1A263ECE0090D777 /* UIAlertView+NTShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+NTShow.m"; sourceTree = "<group>"; };
 		432DAA711A2641B00090D777 /* UIActivityIndicatorView+NTShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActivityIndicatorView+NTShow.h"; sourceTree = "<group>"; };
 		432DAA721A2641B00090D777 /* UIActivityIndicatorView+NTShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActivityIndicatorView+NTShow.m"; sourceTree = "<group>"; };
+		43EE60951A26F36C001855D6 /* NTPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTPhoto.h; sourceTree = "<group>"; };
+		43EE60961A26F36C001855D6 /* NTPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTPhoto.m; sourceTree = "<group>"; };
 		43F52A951A26E93100245C07 /* NTSocialInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTSocialInterface.h; sourceTree = "<group>"; };
 		43F52A961A26E93100245C07 /* NTSocialInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTSocialInterface.m; sourceTree = "<group>"; };
 		43F52A981A26E94900245C07 /* NTAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTAlbum.h; sourceTree = "<group>"; };
@@ -211,6 +214,8 @@
 				43F52A961A26E93100245C07 /* NTSocialInterface.m */,
 				43F52A981A26E94900245C07 /* NTAlbum.h */,
 				43F52A991A26E94900245C07 /* NTAlbum.m */,
+				43EE60951A26F36C001855D6 /* NTPhoto.h */,
+				43EE60961A26F36C001855D6 /* NTPhoto.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -323,6 +328,7 @@
 				432DAA591A254C4E0090D777 /* NTAlbumsTableViewController.m in Sources */,
 				432DAA601A254D960090D777 /* NTUser.m in Sources */,
 				432DAA701A263ECE0090D777 /* UIAlertView+NTShow.m in Sources */,
+				43EE60971A26F36C001855D6 /* NTPhoto.m in Sources */,
 				432DAA1D1A2475380090D777 /* main.m in Sources */,
 				432DAA731A2641B00090D777 /* UIActivityIndicatorView+NTShow.m in Sources */,
 				432DAA581A254C4E0090D777 /* AppDelegate.m in Sources */,

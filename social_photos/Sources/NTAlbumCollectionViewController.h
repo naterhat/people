@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class NTAlbum;
+
 @interface NTAlbumCollectionViewController : UICollectionViewController
-@property (nonatomic) id album;
+@property (nonatomic) NTAlbum *album;
 @end

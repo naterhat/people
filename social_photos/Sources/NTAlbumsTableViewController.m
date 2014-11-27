@@ -11,6 +11,8 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "NTUser.h"
 #import "NTGlobal.h"
+#import "NTSocialInterface.h"
+#import "UIAlertView+NTShow.h"
 
 @interface NTAlbumsTableViewController ()
 @property (nonatomic) id selectedAlbum;
@@ -48,9 +50,9 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     // Configure the cell...
-    id album = self.albums[indexPath.row];
-    [cell.textLabel setText:album[@"name"]];
-    [cell.detailTextLabel setText:album[@"id"]];
+    NTAlbum *album = self.albums[indexPath.row];
+    [cell.textLabel setText:album.name];
+    [cell.detailTextLabel setText:album.identifier];
     
     return cell;
 }
@@ -65,54 +67,23 @@
     [self performSegueWithIdentifier:@"album" sender:self];
 }
 
-- (void)uploadPhotos
-{
-    //    UIImage *image = [UIImage imageNamed:@"texture.jpg"];
-    NSURL *url = [[NSBundle mainBundle] URLForResource:@"texture" withExtension:@"jpg"];
-    NSData *imageData = [NSData dataWithContentsOfURL:url];
-    NSString *encodeImage = [[NSString alloc] initWithData:imageData  encoding:NSUTF8StringEncoding];
-    
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            encodeImage, @"source",
-                            nil
-                            ];
-    
-    // 1) get albums
-    // 2) select an albums
-    // 3) open image picker
-    // 4) select the images to upload
-    // 5) upload the selected images to album
-    // album id: 569065269905122"
-    
-    /* make the API call */
-    [FBRequestConnection startWithGraphPath:@"/{album-id}/photos"
-                                 parameters:params
-                                 HTTPMethod:@"POST"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              NTLogConnection(connection, result, error);
-                              /* handle the result */
-                          }];
-}
+#pragma mark -
+#pragma mark - Other Functions
 
 - (void)retrieveAlbums {
-    NSString *userID = [[NTUser currentUser] identifier];
-    if(!userID) return;
-    
     __weak typeof(self) weakself = self;
-    NSString *urlString = [NSString stringWithFormat:@"/%@/albums", userID];
-    [FBRequestConnection startWithGraphPath:urlString completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NTLogConnection(connection, result, error);
-        
-        // set data
-        weakself.albums = result[@"data"];
-        
-        // reload table view
-        [weakself.tableView reloadData];
-    }];
+    [[NTSocialInterface sharedInstance] retrieveAlbumsWithHandler:^(NSArray *albums, NSError *error) {
+        if(error) {
+            [UIAlertView showAlertWithTitle:@"Error" andMessage:error.localizedDescription cancelTitle:nil];
+        } else {
+            // set data
+            weakself.albums = albums;
+            
+            // reload table view
+            [weakself.tableView reloadData];
+        }
+    } fromUser:[NTUser currentUser] forInterfaceType:NTSocialInterfaceTypeFacebook];
+    
 }
 
 
