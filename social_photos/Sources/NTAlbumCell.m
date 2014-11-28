@@ -41,8 +41,6 @@
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
-//    [super setHighlighted:highlighted animated:animated];
-    
     if (highlighted) {
         [self setBackgroundColor:[UIColor blueColor]];
     } else {

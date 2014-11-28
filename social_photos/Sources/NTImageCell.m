@@ -12,7 +12,6 @@
 
 - (void)awakeFromNib
 {
-    [self.imageView.layer setCornerRadius:8];
     [self.imageView.layer setMasksToBounds:NO];
     [self.imageView.layer setShadowColor:[UIColor blackColor].CGColor];
     [self.imageView.layer setShadowOpacity:1];
