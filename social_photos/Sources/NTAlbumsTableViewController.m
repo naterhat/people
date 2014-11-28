@@ -50,11 +50,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    [cell setBackgroundColor:[UIColor clearColor]];
     
     // Configure the cell...
     NTAlbum *album = self.albums[indexPath.row];
     [cell.textLabel setText:album.name];
-    [cell.detailTextLabel setText:album.identifier];
     
     return cell;
 }

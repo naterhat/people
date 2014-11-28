@@ -38,11 +38,19 @@ static NSString * const reuseIdentifier = @"cell";
     
     [self setTitle:@"PHOTOS"];
     
+//    UIColor *patternColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture.jpg"]];
+//    
+//    UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
+//    [view setBackgroundColor:patternColor];
+//    [self.collectionView setBackgroundView:view];
+    
     UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:@"SEND" style:UIBarButtonItemStylePlain target:self action:@selector(send)];
     [self.navigationItem setRightBarButtonItem:sendButton];
     _sendButton = sendButton;
     
     [self.collectionView setAllowsMultipleSelection:YES];
+    
+    [self.collectionView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture.jpg"]]];
     
     // retrieve photo manager
     if ( ! _photoManager ) {
@@ -148,12 +156,14 @@ static NSString * const reuseIdentifier = @"cell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-//    return self.photos.count;
     return [_photoManager photoCount];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    
+    [cell.imageView.layer setCornerRadius:5];
+    [cell.imageView.layer setMasksToBounds:YES];
     
     if (_photoManager) {
         // retrieve asset object

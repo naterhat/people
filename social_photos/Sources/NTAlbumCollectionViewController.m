@@ -30,14 +30,25 @@ static NSString * const reuseIdentifier = @"cell";
     
     [self setTitle:self.album.name];
     
-    // Register cell classes
-//    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
+//    UIColor *patternColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_wood_texture.jpg"]];
+//    
+//    UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
+//    [view setBackgroundColor:patternColor];
+//    [self.collectionView setBackgroundView:view];
     
-    // Do any additional setup after loading the view.
-    [self retrievePhotos];
+//    [self.collectionView setBackgroundColor:patternColor];
     
+    
+    // add upload button to the right of the navigation bar
     UIBarButtonItem *uploadButton = [[UIBarButtonItem alloc] initWithTitle:@"UPLOAD" style:UIBarButtonItemStylePlain target:self action:@selector(openPhotos)];
     [self.navigationItem setRightBarButtonItem:uploadButton];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self retrievePhotos];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -59,6 +70,9 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    
+    [cell.imageView.layer setCornerRadius:5];
+    [cell.imageView.layer setMasksToBounds:YES];
     
     // retrieve the smallest image
     NTPhoto *photo = self.photos[indexPath.row];
@@ -97,11 +111,15 @@ static NSString * const reuseIdentifier = @"cell";
         if (error) {
             [UIAlertView showAlertWithTitle:@"Error" andMessage:error.localizedDescription cancelTitle:nil];
         } else {
-            // set data
-            weakself.photos = [NSMutableArray arrayWithArray:photos];
+            BOOL updated = weakself.photos.count != photos.count;
             
-            // reload collection view
-            [weakself.collectionView reloadData];
+            if (updated) {
+                // set data
+                weakself.photos = [NSMutableArray arrayWithArray:photos];
+                
+                // reload collection view
+                [weakself.collectionView reloadData];
+            }
         }
     } fromAlbum:self.album forInterfaceType:NTSocialInterfaceTypeFacebook];
 }

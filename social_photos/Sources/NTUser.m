@@ -47,6 +47,7 @@ static NSString *const kAlbumsKey = @"albums";
     
     // save
     // . . .
+    // didn't got around doing this.
 }
 
 - (BOOL)loaded
@@ -81,7 +82,7 @@ static NSString *const kAlbumsKey = @"albums";
 
 @end
 
-
+// ===============================
 
 @implementation  NTUser (Facebook)
 
