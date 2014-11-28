@@ -82,6 +82,51 @@ NSString *const NTSocialInterfaceTypeFacebook = @"facebook";
     }];
 }
 
+- (void)createNewAlbumWithName:(NSString *)albumName forUser:(NTUser *)user ofInterfaceType:(NSString *)interfaceType handler:(NTSocialInterfaceRequestHandler)handler
+{
+    // validate user
+    if (!user || ![user identifier]) {
+        NSLog(@"Error with user ID");
+        
+        NSError *error = [NSError errorWithDomain:@"com.ifcantel.network" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Error with user ID"}];
+        if(handler) handler(nil, error);
+        return;
+    }
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            albumName, @"name",
+                            @"", @"message",
+                            nil
+                            ];
+    
+    /* make the API call */
+    [FBRequestConnection startWithGraphPath:@"/me/albums"
+                                 parameters:params
+                                 HTTPMethod:@"POST"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              )
+    {
+          /* handle the result */
+          NTLogConnection(connection, result, error);
+          
+          // check if any errors
+          if (error)  {
+              if(handler) handler(NO, error);
+              return;
+          }
+        
+          
+          // if handler, execute handler
+          if (handler) {
+              handler(YES, nil);
+          }
+      }];
+    
+}
+
 - (void)retrievePhotosWithHandler:(NTSocialInterfaceRetrievePhotos)handler fromAlbum:(NTAlbum *)album forInterfaceType:(NSString *)interfaceType
 {
     // validate album

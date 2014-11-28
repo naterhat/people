@@ -13,9 +13,11 @@
 #import "NTGlobal.h"
 #import "NTSocialInterface.h"
 #import "UIAlertView+NTShow.h"
+#import "UIActivityIndicatorView+NTShow.h"
 
-@interface NTAlbumsTableViewController ()
+@interface NTAlbumsTableViewController ()<UIAlertViewDelegate>
 @property (nonatomic) id selectedAlbum;
+@property (nonatomic) NSArray *albums;
 @end
 
 @implementation NTAlbumsTableViewController
@@ -24,7 +26,7 @@
     [super viewDidLoad];
     
     // initialize if not.
-    if (! _albums) _albums = [NSMutableArray array];
+    _albums = [NSArray array];
     
     [self setTitle:@"ALBUMS"];
     
@@ -37,6 +39,24 @@
     [vc setAlbum:self.selectedAlbum];
 }
 
+- (void)createAlbumWithName:(NSString *)name
+{
+    [UIActivityIndicatorView showIndicator];
+    
+    __weak typeof(self) weakself = self;
+    [[NTSocialInterface sharedInstance] createNewAlbumWithName:name forUser:[NTUser currentUser] ofInterfaceType:NTSocialInterfaceTypeFacebook handler:^(BOOL success, NSError *error) {
+        
+        [UIActivityIndicatorView hideIndicator];
+        
+        // clear albums
+        weakself.albums = @[];
+        [weakself.tableView reloadData];
+        
+        // get new list of albums
+        [weakself retrieveAlbums];
+    }];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -44,7 +64,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.albums.count;
+    return self.albums.count + 1;
 }
 
 
@@ -52,21 +72,36 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     [cell setBackgroundColor:[UIColor clearColor]];
     
-    // Configure the cell...
-    NTAlbum *album = self.albums[indexPath.row];
-    [cell.textLabel setText:album.name];
+    if (indexPath.row == 0){
+        [cell.textLabel setText:@"CREATE NEW ALBUM . . ."];
+    } else {
+        // Configure the cell...
+        NTAlbum *album = self.albums[indexPath.row-1];
+        [cell.textLabel setText:album.name];
+    }
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // dispatch back to the main view controller and pass the selected album.
-    self.selectedAlbum = self.albums[indexPath.row];
+    if(indexPath.row == 0){
+        [UIActivityIndicatorView showIndicator];
+        
+        // alert user for the name of the new album
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Create Album" message:@"Name for album?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Create", nil];
+        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
+        [alert show];
+    } else {
+        // go to album view controller
+        // dispatch back to the main view controller and pass the selected album.
+        self.selectedAlbum = self.albums[indexPath.row-1];
+        
+        [self performSegueWithIdentifier:@"album" sender:self];
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    [self performSegueWithIdentifier:@"album" sender:self];
 }
 
 #pragma mark -
@@ -88,6 +123,26 @@
     } fromUser:[NTUser currentUser] forInterfaceType:NTSocialInterfaceTypeFacebook];
     
 }
+
+#pragma mark -
+#pragma mark - UIAlertView Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == 0) {
+        // cancel
+    } else {
+        NSString *name = [[alertView textFieldAtIndex:0] text];
+        if (name.length  == 0) {
+            [UIAlertView showAlertWithTitle:@"Error" andMessage:@"Name can't be empty." cancelTitle:nil];
+            [UIActivityIndicatorView hideIndicator];
+        } else {
+            [self createAlbumWithName:name];
+        }
+    }
+    
+}
+
 
 
 

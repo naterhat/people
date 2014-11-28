@@ -11,7 +11,6 @@
 @protocol NTAlbumsTableViewControllerDelegate;
 
 @interface NTAlbumsTableViewController : UITableViewController
-@property (nonatomic) NSArray *albums;
 @property (nonatomic, weak) id<NTAlbumsTableViewControllerDelegate> delegate;
 @end
 
