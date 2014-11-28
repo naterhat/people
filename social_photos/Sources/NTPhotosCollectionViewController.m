@@ -14,16 +14,17 @@
 #import "UIActivityIndicatorView+NTShow.h"
 #import "NTSocialInterface.h"
 #import <Photos/Photos.h>
+#import "NTPhotoManager.h"
+#import "NTImageCell.h"
 
 static CGFloat const kDeselectValue = 0.4f;
 static CGFloat const kSelectValue = 1.0f;
 
 @interface NTPhotosCollectionViewController ()<UIAlertViewDelegate>
-@property (nonatomic) NSMutableArray *photos;
-@property (nonatomic) NSMutableArray *photoThumbnails;
+@property (nonatomic) NSMutableArray *selectedAssets;
 @property (nonatomic) UIBarButtonItem *sendButton;
-@property (nonatomic) NSInteger uploadRequestCount;
-@property (nonatomic) NSInteger uploadRequestErrorCount;
+@property (nonatomic) NSArray *selectedPhotoAssets;
+@property (nonatomic) id<NTPhotoManagerInstance> photoManager;
 @end
 
 @implementation NTPhotosCollectionViewController
@@ -33,13 +34,9 @@ static NSString * const reuseIdentifier = @"cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _photos = [NSMutableArray array];
-    _photoThumbnails = [NSMutableArray array];
+    _selectedAssets = [NSMutableArray array];
     
     [self setTitle:@"PHOTOS"];
-    
-    // Register cell classes
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
     UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:@"SEND" style:UIBarButtonItemStylePlain target:self action:@selector(send)];
     [self.navigationItem setRightBarButtonItem:sendButton];
@@ -47,119 +44,51 @@ static NSString * const reuseIdentifier = @"cell";
     
     [self.collectionView setAllowsMultipleSelection:YES];
     
-    // Do any additional setup after loading the view.
-    [self retrievePhotosFromAlbum];
-}
-
-- (void)retrievePhotosFromAlbumOfIOS7
-{
-    if( [ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied ) {
-        NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
-        [[[UIAlertView alloc] initWithTitle:nil
-                                    message:message
-                                   delegate:self
-                          cancelButtonTitle:@"OK"
-                          otherButtonTitles:nil] show];
-        return;
+    // retrieve photo manager
+    if ( ! _photoManager ) {
+        if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
+            _photoManager = [NTPhotoManagerPHAsset sharedInstance];
+        } else {
+            _photoManager = [NTPhotoManagerALAsset sharedInstance];
+        }
     }
     
-    // Source been copied and modified from the version of this link
-    // http://stackoverflow.com/questions/9705478/get-list-of-all-photo-albums-and-thumbnails-for-each-album
-    
+    // Do any additional setup after loading the view.
+    [self authorizePhotoManager];
+}
+
+- (void)authorizePhotoManager
+{
+    // check if authorized
     __weak typeof(self) weakself = self;
-    
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    
-    // Enumerate just the photos and videos group by using ALAssetsGroupSavedPhotos.
-    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-        
-        // Within the group enumeration block, filter to enumerate just photos.
-        [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-        
-        // Chooses the photo at the last index
-        [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
-            // The end of the enumeration is signaled by asset == nil.
-            if (alAsset) {
+    if( ! [_photoManager authorized] ) {
+        [_photoManager authorizing:^(BOOL success) {
+            if ( !success ) {
+                NTLogTitleMessage(@"PHOTO MANAGER", @"UNSUCCESSFUL");
                 
-                
-                NSString *type = [alAsset valueForProperty:ALAssetPropertyType];
-                
-                if([type isEqualToString:@"ALAssetTypePhoto"]) {
-                    
-                    ALAssetRepresentation *representation = [alAsset defaultRepresentation];
-                    
-                    // get the images from assets
-                    UIImage *latestPhoto = [UIImage imageWithCGImage:[representation fullScreenImage]];
-                    UIImage *latestPhotoThumbnail =  [UIImage imageWithCGImage:[alAsset thumbnail]];
-                    
-                    // save images and thumbnails to array to use later.
-                    [weakself.photos addObject:latestPhoto];
-                    [weakself.photoThumbnails addObject:latestPhotoThumbnail];
-                }
+                NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
+                [[[UIAlertView alloc] initWithTitle:nil
+                                            message:message
+                                           delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            } else {
+                NTLogTitleMessage(@"PHOTO MANAGER", @"SUCCESSFUL");
+                // authorize
+                [weakself retrievePhotosFromAlbum];
             }
         }];
-        
-        [weakself.collectionView reloadData];
-    } failureBlock: ^(NSError *error) {
-        // Typically you should handle an error more gracefully than this.
-        NSLog(@"No groups");
-    }];
-}
-
-- (void)retrievePhotosFromAlbumOfIOS8
-{
-    
-    if( [PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusDenied ) {
-        NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
-        [[[UIAlertView alloc] initWithTitle:nil
-                                    message:message
-                                   delegate:self
-                          cancelButtonTitle:@"OK"
-                          otherButtonTitles:nil] show];
-        return;
+    } else {
+        [self retrievePhotosFromAlbum];
     }
-    
-    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-    [option setSynchronous:YES];
-    
-    PHFetchResult *result = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
-    [result enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NTLogTitleMessage(@"photo", obj);
-        
-        [[PHImageManager defaultManager] requestImageForAsset:obj targetSize:CGSizeMake([obj pixelWidth], [obj pixelHeight]) contentMode:PHImageContentModeDefault options:option resultHandler:^(UIImage *result, NSDictionary *info) {
-            NSLog(@"info: %@ / result: %@", info, result);
-            [self.photos addObject:result];
-        }];
-    }];
-    
-    NSLog(@"get thumbnails");
-    
-    [result enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NTLogTitleMessage(@"photo", obj);
-        [[PHImageManager defaultManager] requestImageForAsset:obj targetSize:CGSizeMake(150, 150) contentMode:PHImageContentModeAspectFit options:option resultHandler:^(UIImage *result, NSDictionary *info) {
-            NSLog(@"info: %@ / result: %@", info, result);
-            [self.photoThumbnails addObject:result];
-        }];
-        
-    }];
-    
-    
-    PH
-    
-    
-    
-    [[self collectionView] reloadData];
-    
 }
 
 - (void)retrievePhotosFromAlbum
 {
-    Class PHPhotoLibraryClass = NSClassFromString(@"PHPhotoLibrary");
-    if (  PHPhotoLibraryClass ) {
-        [self retrievePhotosFromAlbumOfIOS8];
-    } else {
-        [self retrievePhotosFromAlbumOfIOS7];
-    }
+    __weak typeof(self) weakself = self;
+    [_photoManager loadAssetsWithCompletion:^{
+        [[weakself collectionView] reloadData];
+    }];
 }
 
 - (void)send
@@ -168,12 +97,9 @@ static NSString * const reuseIdentifier = @"cell";
         [UIAlertView showAlertWithTitle:@"Error" andMessage:@"Need to select at least 1 photo." cancelTitle:nil];
         return;
     }
-    
-    // get selected photos
-    NSMutableArray *selectedImages = [NSMutableArray array];
-    for (NSIndexPath *indexPath in self.collectionView.indexPathsForSelectedItems) {
-        [selectedImages addObject: self.photos[indexPath.row]];
-    }
+
+    // synchronize of retrieving images
+    NSArray *selectedImages = [_photoManager imagesForPhotoAssets:self.selectedAssets];
     
     // check if any photos to upload
     if ( ! selectedImages.count ) {
@@ -201,6 +127,18 @@ static NSString * const reuseIdentifier = @"cell";
     } forInterfaceType:NTSocialInterfaceTypeFacebook];
 }
 
+- (void)addSelectedImage:(UIImage *)image atIndexPath:(NSIndexPath *)indexPath
+{
+    id asset = [_photoManager photoAssetAtIndex:indexPath.row];
+    [self.selectedAssets addObject:asset];
+}
+
+- (void)removeSelectedImageAtIndexPath:(NSIndexPath *)indexPath
+{
+    id asset = [_photoManager photoAssetAtIndex:indexPath.row];
+    [self.selectedAssets removeObject:asset];
+}
+
 
 #pragma mark <UICollectionViewDataSource>
 
@@ -210,27 +148,26 @@ static NSString * const reuseIdentifier = @"cell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.photos.count;
+//    return self.photos.count;
+    return [_photoManager photoCount];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    
-    // Configure the cell
-    UIImageView *imageView = (id)[cell viewWithTag:1];
-    if ( ! imageView ) {
-        imageView =[[UIImageView alloc] initWithFrame:cell.bounds];
-        [imageView setTag:1];
-        [cell.contentView addSubview:imageView];
+    if (_photoManager) {
+        // retrieve asset object
+        id asset = [_photoManager photoAssetAtIndex:indexPath.row];
+        [_photoManager imageForPhotoAsset:asset sync:NO thumbnailed:YES asyncHandler:^(UIImage *image) {
+            [cell.imageView setImage:image];
+        }];
+        
+        // check if selected
+        BOOL selected = [self.selectedAssets containsObject:asset];
+        
+        // set the highlight color
+        [cell.imageView setAlpha: selected ? kSelectValue : kDeselectValue];
     }
-    
-    // set image
-    UIImage *image = self.photoThumbnails[indexPath.row];
-    [imageView setImage:image];
-    
-    // set the highlight color
-    [imageView setAlpha: cell.selected ? kSelectValue : kDeselectValue];
     
     return cell;
 }
@@ -241,6 +178,8 @@ static NSString * const reuseIdentifier = @"cell";
     if ( !imageView ) return;
     
     [imageView setAlpha:kDeselectValue];
+    
+    [self removeSelectedImageAtIndexPath:indexPath];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -257,6 +196,8 @@ static NSString * const reuseIdentifier = @"cell";
     if ( !imageView ) return;
     
     [imageView setAlpha:kSelectValue];
+    
+    [self addSelectedImage:imageView.image atIndexPath:indexPath];
 }
 
 #pragma mark -

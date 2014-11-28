@@ -13,6 +13,7 @@
 #import "NTPhotosCollectionViewController.h"
 #import "NTSocialInterface.h"
 #import "UIAlertView+NTShow.h"
+#import "NTImageCell.h"
 
 @interface NTAlbumCollectionViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic) NSMutableArray *photos;
@@ -30,7 +31,7 @@ static NSString * const reuseIdentifier = @"cell";
     [self setTitle:self.album.name];
     
     // Register cell classes
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
+//    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
     // Do any additional setup after loading the view.
     [self retrievePhotos];
@@ -57,38 +58,30 @@ static NSString * const reuseIdentifier = @"cell";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    // Configure the cell
-    UIImageView *imageView = (id)[cell viewWithTag:1];
-    if ( ! imageView ) {
-        imageView =[[UIImageView alloc] initWithFrame:cell.bounds];
-        [imageView setTag:1];
-        [cell.contentView addSubview:imageView];
-    }
-    
+    // retrieve the smallest image
     NTPhoto *photo = self.photos[indexPath.row];
-    
     id smallestImage = [photo smallestImage];
     
+    if ( !smallestImage ) return cell;
+    
     // display the smallest image. Didn't have chance to conver the image dictioanry to NSObject.
-    if( smallestImage ) {
-        // retrieve image from web by async
-        __block NSString *source = smallestImage[@"source"];
-        dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0) , ^{
+    // retrieve image from web by async
+    __block NSString *source = smallestImage[@"source"];
+    dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0) , ^{
+        
+        // get image data
+        NSURL *url= [NSURL URLWithString:source];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        
+        // get back to main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-            // get image data
-            NSURL *url= [NSURL URLWithString:source];
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            
-            // get back to main thread
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                // load image to image view.
-                [imageView setImage:[[UIImage alloc] initWithData:data]];
-            });
+            // load image to image view.
+            [cell.imageView setImage:[[UIImage alloc] initWithData:data]];
         });
-    }
+    });
     
     return cell;
 }
