@@ -31,6 +31,8 @@
 		4369E5471A2830A500A914C4 /* NTAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4369E5461A2830A500A914C4 /* NTAlbumCell.m */; };
 		4369E5491A28369C00A914C4 /* right_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 4369E5481A28369C00A914C4 /* right_arrow.png */; };
 		4369E54C1A28382300A914C4 /* UIImage+NTExtra.m in Sources */ = {isa = PBXBuildFile; fileRef = 4369E54B1A28382300A914C4 /* UIImage+NTExtra.m */; };
+		4369E54F1A2841AC00A914C4 /* NTCameraCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4369E54E1A2841AC00A914C4 /* NTCameraCollectionViewController.m */; };
+		4369E5511A284D7500A914C4 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 4369E5501A284D7500A914C4 /* plus.png */; };
 		43EE60971A26F36C001855D6 /* NTPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 43EE60961A26F36C001855D6 /* NTPhoto.m */; };
 		43EE60991A2701CE001855D6 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EE60981A2701CE001855D6 /* Photos.framework */; };
 		43EE609C1A278137001855D6 /* NTPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 43EE609B1A278137001855D6 /* NTPhotoManager.m */; };
@@ -92,6 +94,9 @@
 		4369E5481A28369C00A914C4 /* right_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_arrow.png; sourceTree = "<group>"; };
 		4369E54A1A28382300A914C4 /* UIImage+NTExtra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+NTExtra.h"; sourceTree = "<group>"; };
 		4369E54B1A28382300A914C4 /* UIImage+NTExtra.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+NTExtra.m"; sourceTree = "<group>"; };
+		4369E54D1A2841AC00A914C4 /* NTCameraCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTCameraCollectionViewController.h; sourceTree = "<group>"; };
+		4369E54E1A2841AC00A914C4 /* NTCameraCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTCameraCollectionViewController.m; sourceTree = "<group>"; };
+		4369E5501A284D7500A914C4 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		43EE60951A26F36C001855D6 /* NTPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTPhoto.h; sourceTree = "<group>"; };
 		43EE60961A26F36C001855D6 /* NTPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTPhoto.m; sourceTree = "<group>"; };
 		43EE60981A2701CE001855D6 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -212,6 +217,7 @@
 		432DAA4E1A254C4E0090D777 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4369E5501A284D7500A914C4 /* plus.png */,
 				4369E5401A28250300A914C4 /* bg_wood_texture.jpg */,
 				4369E5481A28369C00A914C4 /* right_arrow.png */,
 			);
@@ -273,6 +279,8 @@
 				432DAA651A25638E0090D777 /* NTAlbumCollectionViewController.m */,
 				432DAA691A256ED80090D777 /* NTPhotosCollectionViewController.h */,
 				432DAA6A1A256ED80090D777 /* NTPhotosCollectionViewController.m */,
+				4369E54D1A2841AC00A914C4 /* NTCameraCollectionViewController.h */,
+				4369E54E1A2841AC00A914C4 /* NTCameraCollectionViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -380,6 +388,7 @@
 				432DAA2B1A2475380090D777 /* LaunchScreen.xib in Resources */,
 				432DAA281A2475380090D777 /* Images.xcassets in Resources */,
 				4369E5491A28369C00A914C4 /* right_arrow.png in Resources */,
+				4369E5511A284D7500A914C4 /* plus.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +416,7 @@
 				432DAA701A263ECE0090D777 /* UIAlertView+NTShow.m in Sources */,
 				4369E53C1A2824D600A914C4 /* NTCollectionView.m in Sources */,
 				4369E5471A2830A500A914C4 /* NTAlbumCell.m in Sources */,
+				4369E54F1A2841AC00A914C4 /* NTCameraCollectionViewController.m in Sources */,
 				4369E54C1A28382300A914C4 /* UIImage+NTExtra.m in Sources */,
 				43EE60971A26F36C001855D6 /* NTPhoto.m in Sources */,
 				432DAA1D1A2475380090D777 /* main.m in Sources */,

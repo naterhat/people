@@ -7,13 +7,10 @@
 //
 
 #import "NTPhotosCollectionViewController.h"
-#import <AssetsLibrary/AssetsLibrary.h>
-#import <FacebookSDK/FacebookSDK.h>
 #import "NTGlobal.h"
 #import "UIAlertView+NTShow.h"
 #import "UIActivityIndicatorView+NTShow.h"
 #import "NTSocialInterface.h"
-#import <Photos/Photos.h>
 #import "NTPhotoManager.h"
 #import "NTImageCell.h"
 
@@ -38,19 +35,14 @@ static NSString * const reuseIdentifier = @"cell";
     
     [self setTitle:@"PHOTOS"];
     
-//    UIColor *patternColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture.jpg"]];
-//    
-//    UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
-//    [view setBackgroundColor:patternColor];
-//    [self.collectionView setBackgroundView:view];
-    
-    UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:@"SEND" style:UIBarButtonItemStylePlain target:self action:@selector(send)];
+    UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:@"SEND"
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(send)];
     [self.navigationItem setRightBarButtonItem:sendButton];
     _sendButton = sendButton;
     
     [self.collectionView setAllowsMultipleSelection:YES];
-    
-    [self.collectionView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture.jpg"]]];
     
     // retrieve photo manager
     if ( ! _photoManager ) {
@@ -74,7 +66,7 @@ static NSString * const reuseIdentifier = @"cell";
             if ( !success ) {
                 NTLogTitleMessage(@"PHOTO MANAGER", @"UNSUCCESSFUL");
                 
-                NSString *message = @"Please go to Settings and authorize Social Photos to gain access to photos.";
+                NSString *message = @"Please go to Settings and authorize People to gain access to photos.";
                 [[[UIAlertView alloc] initWithTitle:nil
                                             message:message
                                            delegate:self
@@ -101,19 +93,14 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)send
 {
-    if( self.collectionView.indexPathsForSelectedItems.count == 0 ) {
+    // validate if selected at least 1 photo.
+    if( self.selectedAssets.count == 0 ) {
         [UIAlertView showAlertWithTitle:@"Error" andMessage:@"Need to select at least 1 photo." cancelTitle:nil];
         return;
     }
 
     // synchronize of retrieving images
     NSArray *selectedImages = [_photoManager imagesForPhotoAssets:self.selectedAssets];
-    
-    // check if any photos to upload
-    if ( ! selectedImages.count ) {
-        NSLog(@"Must select at least 1 image");
-        return;
-    }
     
     // show indicator
     [UIActivityIndicatorView showIndicator];
@@ -147,7 +134,7 @@ static NSString * const reuseIdentifier = @"cell";
     [self.selectedAssets removeObject:asset];
 }
 
-
+#pragma mark -
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -161,9 +148,6 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
-    [cell.imageView.layer setCornerRadius:5];
-    [cell.imageView.layer setMasksToBounds:YES];
     
     if (_photoManager) {
         // retrieve asset object

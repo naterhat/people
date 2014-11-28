@@ -15,7 +15,7 @@
 #import "UIAlertView+NTShow.h"
 #import "NTImageCell.h"
 
-@interface NTAlbumCollectionViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface NTAlbumCollectionViewController ()<UIAlertViewDelegate>
 @property (nonatomic) NSMutableArray *photos;
 @end
 
@@ -30,17 +30,11 @@ static NSString * const reuseIdentifier = @"cell";
     
     [self setTitle:self.album.name];
     
-//    UIColor *patternColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_wood_texture.jpg"]];
-//    
-//    UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
-//    [view setBackgroundColor:patternColor];
-//    [self.collectionView setBackgroundView:view];
-    
-//    [self.collectionView setBackgroundColor:patternColor];
-    
-    
     // add upload button to the right of the navigation bar
-    UIBarButtonItem *uploadButton = [[UIBarButtonItem alloc] initWithTitle:@"UPLOAD" style:UIBarButtonItemStylePlain target:self action:@selector(openPhotos)];
+    UIBarButtonItem *uploadButton = [[UIBarButtonItem alloc] initWithTitle:@"UPLOAD"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(openPhotos)];
     [self.navigationItem setRightBarButtonItem:uploadButton];
 }
 
@@ -53,7 +47,7 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NTPhotosCollectionViewController *vc = (id)segue.destinationViewController;
+    id vc = (id)segue.destinationViewController;
     [vc setAlbum:self.album];
 }
 
@@ -70,9 +64,6 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
-    [cell.imageView.layer setCornerRadius:5];
-    [cell.imageView.layer setMasksToBounds:YES];
     
     // retrieve the smallest image
     NTPhoto *photo = self.photos[indexPath.row];
@@ -126,17 +117,27 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)openPhotos
 {
-    [self performSegueWithIdentifier:@"photos" sender:self];
+    NSString *message = @"Select method to upload photos:";
+    [[[UIAlertView alloc] initWithTitle:nil
+                                message:message
+                               delegate:self
+                      cancelButtonTitle:@"Cancel"
+                      otherButtonTitles:@"Camera", @"Photo Library", nil] show];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+#pragma mark -
+#pragma mark - UIAlertView Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NTLogTitleMessage(@"photo", info);
+    if (buttonIndex == 1) {
+        // open camera
+        [self performSegueWithIdentifier:@"camera" sender:self];
+    } else if (buttonIndex == 2) {
+        // open photos
+        [self performSegueWithIdentifier:@"photos" sender:self];
+    }
 }
 
 @end
