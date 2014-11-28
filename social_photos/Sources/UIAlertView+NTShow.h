@@ -1,9 +1,8 @@
 //
-//  UIAlertView+BRWShow.h
-//  nre
+//  UIAlertView+NTShow.m
 //
 //  Created by Nate on 4/15/14.
-//  Copyright (c) 2014 timewaster. All rights reserved.
+//  Copyright (c) 2014 ifcantel. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

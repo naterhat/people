@@ -1,0 +1,15 @@
+//
+//  UIImage+NTExtra.h
+//  social_photos
+//
+//  Created by Nate on 11/27/14.
+//  Copyright (c) 2014 ifcantel. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface UIImage (NTExtra)
+
++ (UIImage *)blendImage:(UIImage *)image withColor:(UIColor *)color;
+
+@end

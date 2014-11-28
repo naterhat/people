@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#ifndef borrowers_BRWGlobal_h
-#define borrowers_BRWGlobal_h
+#ifndef NTGlobal_h
+#define NTGlobal_h
 
 /**
  *  Log
@@ -31,6 +31,9 @@
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
 
-//#define IS_IOS_8_ABOVE  ([[[UIDevice currentDevice] systemVersion] compare:@"8.0" options:NSNumericSearch] != NSOrderedAscending)
+/**
+ *  Color
+ */
+#define NTGlobalTextColor [UIColor colorWithRed:0.224f green:0.106f blue:0.055f alpha:1.0f]
 
 #endif

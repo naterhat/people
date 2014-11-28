@@ -89,7 +89,7 @@ static NSString *const kAlbumsKey = @"albums";
 - (instancetype)initWithFacebookObject:(id)obj
 {
     if(self = [super init] ) {
-        _name = obj[@"name"];
+        _name = obj[@"first_name"];
         _identifier = obj[@"id"];
     } return self;
 }
