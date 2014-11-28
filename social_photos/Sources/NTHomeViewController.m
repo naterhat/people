@@ -19,6 +19,7 @@
 @property (nonatomic) NSString *userID;
 @property (nonatomic) NSArray *albums;
 @property (nonatomic) UIView *facebookContainerView;
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttons;
 @end
 
 @implementation NTHomeViewController
@@ -27,9 +28,15 @@
     [super viewDidLoad];
     
     
+    // create container for facebook login view
     UIView *containerView = [[UIView alloc] initWithFrame:self.view.bounds];
     [containerView setBackgroundColor:[UIColor colorWithWhite:0 alpha:.5f]];
     _facebookContainerView = containerView;
+    
+    // set background color
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_wood_texture.jpg"]]];
+    
+    [self.buttons setValue:@YES forKeyPath:@"hidden"];
     
     [self login];
 }
@@ -120,6 +127,8 @@
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView
 {
     NSLog(@"LOGGED IN");
+    
+    [self.buttons setValue:@NO forKeyPath:@"hidden"];
     [self.facebookContainerView removeFromSuperview];
     
     // get user data
@@ -131,6 +140,10 @@
 - (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
 {
     NSLog(@"LOGGED OUT");
+    
+    // clear screen of buttons and title.
+    [self.buttons setValue:@YES forKeyPath:@"hidden"];
+    [self setTitle:@""];
 }
 
 @end
