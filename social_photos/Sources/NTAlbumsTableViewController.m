@@ -129,8 +129,10 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    
     if(buttonIndex == 0) {
         // cancel
+        [UIActivityIndicatorView hideIndicator];
     } else {
         NSString *name = [[alertView textFieldAtIndex:0] text];
         if (name.length  == 0) {
