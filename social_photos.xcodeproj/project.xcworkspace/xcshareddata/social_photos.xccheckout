@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B02797EA-2EA3-4DEF-B139-F1DD4ECA3CF1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>social_photos</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C8EACAD9450306AB52F4FAE47F840A89FF696B96</key>
+		<string>github.com:naterhat/people.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>social_photos.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C8EACAD9450306AB52F4FAE47F840A89FF696B96</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:naterhat/people.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C8EACAD9450306AB52F4FAE47F840A89FF696B96</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C8EACAD9450306AB52F4FAE47F840A89FF696B96</string>
+			<key>IDESourceControlWCCName</key>
+			<string>social_photos</string>
+		</dict>
+	</array>
+</dict>
+</plist>

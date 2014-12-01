@@ -8,9 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+@class NTPhoto;
+
 @interface NTAlbum : NSObject
 @property (nonatomic) NSString *name;
 @property (nonatomic) NSString *identifier;
+@property (nonatomic) NSString *coverPhotoID;
+@property (nonatomic) NTPhoto *photo;
 
 @end
 

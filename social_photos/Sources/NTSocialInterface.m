@@ -60,7 +60,7 @@ NSString *const NTSocialInterfaceTypeFacebook = @"facebook";
     // call to retreive albums
     NSString *urlString = [NSString stringWithFormat:@"/%@/albums", [user identifier]];
     [FBRequestConnection startWithGraphPath:urlString completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NTLogConnection(connection, result, error);
+//        NTLogConnection(connection, result, error);
         
         // check if any errors
         if (error)  {
@@ -89,7 +89,7 @@ NSString *const NTSocialInterfaceTypeFacebook = @"facebook";
         NSLog(@"Error with user ID");
         
         NSError *error = [NSError errorWithDomain:@"com.ifcantel.network" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Error with user ID"}];
-        if(handler) handler(nil, error);
+        if(handler) handler(NO, error);
         return;
     }
     
@@ -111,7 +111,7 @@ NSString *const NTSocialInterfaceTypeFacebook = @"facebook";
     {
           /* handle the result */
           NTLogConnection(connection, result, error);
-          
+        
           // check if any errors
           if (error)  {
               if(handler) handler(NO, error);
@@ -161,6 +161,62 @@ NSString *const NTSocialInterfaceTypeFacebook = @"facebook";
         }
     }];
 }
+
+- (void)retrieveCoverPhotosWithHandler:(NTSocialInterfaceRetrievePhotoFromAlbum)handler fromAlbums:(NSArray *)albums forInterfaceType:(NSString *)interfaceType
+{
+    // validate count
+    if(albums.count == 0) {
+        NSError *error = [NSError errorWithDomain:@"com.ifcantel.network" code:2 userInfo:@{NSLocalizedDescriptionKey: @"No albums passed"}];
+        if(handler) handler(nil, nil, error);
+        return;
+    }
+    
+    // create array of upload photo requests
+    FBRequestConnection *connection = [[FBRequestConnection alloc] init];
+    for (int i = 0; i < albums.count; i++) {
+    
+        __block NTAlbum *album = albums[i];
+        // validate album
+        if (!album || ![album coverPhotoID]) {
+            NSLog(@"Error with album ID");
+            
+            NSError *error = [NSError errorWithDomain:@"com.ifcantel.network" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Error with album ID"}];
+            if(handler) handler(nil, album, error);
+            continue;
+        }
+        
+        NSString *graphPath = [NSString stringWithFormat:@"/%@", album.coverPhotoID];
+        
+        // create and add request
+        FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:nil HTTPMethod:@"GET"];
+        
+        [connection addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//            NTLogConnection(connection, result, error);
+            
+            // check if any errors
+            if (error)  {
+                handler(nil, album, error);
+                return;
+            }
+            
+            // set photo object and set to album
+            NTPhoto *photo = [[NTPhoto alloc] initWithFacebookObject:result];
+            album.photo = photo;
+            
+            NTLogTitleMessage(album.name, [album.photo images]);
+            
+            // if handler, execute handler
+            if (handler) {
+                handler(photo, album, nil);
+            }
+            
+        }];
+    }
+    
+    [connection start];
+}
+
+
 
 - (void)uploadImages:(NSArray *)images toAlbum:(NTAlbum *)album handler:(NTSocialInterfaceRequestHandler)handler forInterfaceType:(NSString *)interfaceType
 {

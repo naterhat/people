@@ -21,6 +21,7 @@
     if(self = [super init] ) {
         _name = obj[@"name"];
         _identifier = obj[@"id"];
+        _coverPhotoID = obj[@"cover_photo"];
     } return self;
 }
 

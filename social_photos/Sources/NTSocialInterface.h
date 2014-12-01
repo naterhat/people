@@ -16,6 +16,7 @@ extern NSString *const NTSocialInterfaceTypeFacebook;
 typedef void(^NTSocialInterfaceRetrieveUser)(NTUser *user, NSError *error);
 typedef void(^NTSocialInterfaceRetrieveAlbums)(NSArray *albums, NSError *error);
 typedef void(^NTSocialInterfaceRetrievePhotos)(NSArray *photos, NSError *error);
+typedef void(^NTSocialInterfaceRetrievePhotoFromAlbum)(NTPhoto *photo, NTAlbum *album, NSError *error);
 typedef void(^NTSocialInterfaceRequestHandler)(BOOL success, NSError *error);
 
 @interface NTSocialInterface : NSObject
@@ -29,4 +30,6 @@ typedef void(^NTSocialInterfaceRequestHandler)(BOOL success, NSError *error);
 - (void)retrievePhotosWithHandler:(NTSocialInterfaceRetrievePhotos)handler fromAlbum:(NTAlbum *)album forInterfaceType:(NSString *)interfaceType;
 - (void)uploadImages:(NSArray *)images toAlbum:(NTAlbum *)album handler:(NTSocialInterfaceRequestHandler)handler forInterfaceType:(NSString *)interfaceType;
 - (void)createNewAlbumWithName:(NSString *)albumName forUser:(NTUser *)user ofInterfaceType:(NSString *)interfaceType handler:(NTSocialInterfaceRequestHandler)handler;
+
+- (void)retrieveCoverPhotosWithHandler:(NTSocialInterfaceRetrievePhotoFromAlbum)handler fromAlbums:(NSArray *)albums forInterfaceType:(NSString *)interfaceType;
 @end

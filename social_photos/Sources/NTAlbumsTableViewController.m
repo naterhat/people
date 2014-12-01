@@ -69,16 +69,26 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    __block UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     [cell setBackgroundColor:[UIColor clearColor]];
     
     if (indexPath.row == 0){
         [cell.textLabel setText:@"CREATE NEW ALBUM . . ."];
+        [cell.imageView setImage:nil];
     } else {
         // Configure the cell...
         NTAlbum *album = self.albums[indexPath.row-1];
         [cell.textLabel setText:album.name];
+        
+        if (album.photo) {
+            // handy way to retrieve image in background
+            [album.photo retrieveSmallestImageWithHandler:^(UIImage *image) {
+                [cell.imageView setImage:image];
+            }];
+        }
     }
+    
+    [cell.detailTextLabel setText:@""];
     
     return cell;
 }
@@ -101,7 +111,6 @@
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
 }
 
 #pragma mark -
@@ -119,9 +128,26 @@
             
             // reload table view
             [weakself.tableView reloadData];
+            
+            [weakself retrieveCoverPhotos];
         }
     } fromUser:[NTUser currentUser] forInterfaceType:NTSocialInterfaceTypeFacebook];
-    
+}
+
+- (void)retrieveCoverPhotos
+{
+    __weak typeof(self) weakself = self;
+    [[NTSocialInterface sharedInstance] retrieveCoverPhotosWithHandler:^(NTPhoto *photo, NTAlbum *album, NSError *error) {
+        // photo is already set to album. All need to do is reload the cell for the album. to reload the image.
+        NSUInteger index = [weakself.albums indexOfObject:album];
+        if(index != NSNotFound) {
+            // remember, the first cell is to create album.
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index+1 inSection:0];
+            
+            // reload cell
+            [weakself.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    } fromAlbums:self.albums forInterfaceType:NTSocialInterfaceTypeFacebook];
 }
 
 #pragma mark -

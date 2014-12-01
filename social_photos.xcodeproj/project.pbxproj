@@ -13,7 +13,6 @@
 		432DAA2B1A2475380090D777 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 432DAA291A2475380090D777 /* LaunchScreen.xib */; };
 		432DAA371A2475380090D777 /* social_photosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA361A2475380090D777 /* social_photosTests.m */; };
 		432DAA431A24765D0090D777 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DAA411A24765D0090D777 /* FacebookSDK.framework */; };
-		432DAA461A2479190090D777 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA451A2479190090D777 /* README.md */; };
 		432DAA581A254C4E0090D777 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA521A254C4E0090D777 /* AppDelegate.m */; };
 		432DAA591A254C4E0090D777 /* NTAlbumsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA541A254C4E0090D777 /* NTAlbumsTableViewController.m */; };
 		432DAA5A1A254C4E0090D777 /* NTHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 432DAA561A254C4E0090D777 /* NTHomeViewController.m */; };
@@ -405,7 +404,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432DAA461A2479190090D777 /* README.md in Sources */,
 				4369E53F1A2824F000A914C4 /* NTTableView.m in Sources */,
 				432DAA6B1A256ED80090D777 /* NTPhotosCollectionViewController.m in Sources */,
 				43F52A971A26E93100245C07 /* NTSocialInterface.m in Sources */,
@@ -549,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -566,6 +565,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

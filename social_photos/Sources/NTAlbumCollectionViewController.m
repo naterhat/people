@@ -63,30 +63,14 @@ static NSString * const reuseIdentifier = @"cell";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    __block NTImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    // retrieve the smallest image
     NTPhoto *photo = self.photos[indexPath.row];
-    id smallestImage = [photo smallestImage];
     
-    if ( !smallestImage ) return cell;
-    
-    // display the smallest image. Didn't have chance to conver the image dictioanry to NSObject.
-    // retrieve image from web by async
-    __block NSString *source = smallestImage[@"source"];
-    dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0) , ^{
-        
-        // get image data
-        NSURL *url= [NSURL URLWithString:source];
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        
-        // get back to main thread
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            // load image to image view.
-            [cell.imageView setImage:[[UIImage alloc] initWithData:data]];
-        });
-    });
+    // retrieve the smallest image in background
+    [photo retrieveSmallestImageWithHandler:^(UIImage *image) {
+        [cell.imageView setImage:image];
+    }];
     
     return cell;
 }
