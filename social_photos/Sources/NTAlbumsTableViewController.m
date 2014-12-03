@@ -144,8 +144,13 @@
             // remember, the first cell is to create album.
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index+1 inSection:0];
             
-            // reload cell
-            [weakself.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakself.tableView beginUpdates];
+                // reload cell
+                [weakself.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [weakself.tableView endUpdates];
+            });
+            
         }
     } fromAlbums:self.albums forInterfaceType:NTSocialInterfaceTypeFacebook];
 }
