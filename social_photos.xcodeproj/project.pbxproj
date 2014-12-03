@@ -37,6 +37,7 @@
 		43EE609C1A278137001855D6 /* NTPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 43EE609B1A278137001855D6 /* NTPhotoManager.m */; };
 		43F52A971A26E93100245C07 /* NTSocialInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F52A961A26E93100245C07 /* NTSocialInterface.m */; };
 		43F52A9A1A26E94900245C07 /* NTAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F52A991A26E94900245C07 /* NTAlbum.m */; };
+		43F91E0B1A2EAAB8008F7115 /* NTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F91E0A1A2EAAB8008F7115 /* NTView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,8 @@
 		43F52A961A26E93100245C07 /* NTSocialInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTSocialInterface.m; sourceTree = "<group>"; };
 		43F52A981A26E94900245C07 /* NTAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTAlbum.h; sourceTree = "<group>"; };
 		43F52A991A26E94900245C07 /* NTAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTAlbum.m; sourceTree = "<group>"; };
+		43F91E091A2EAAB8008F7115 /* NTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTView.h; sourceTree = "<group>"; };
+		43F91E0A1A2EAAB8008F7115 /* NTView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -297,6 +300,8 @@
 				4369E5431A2826C000A914C4 /* NTNavigationBar.m */,
 				4369E5451A2830A500A914C4 /* NTAlbumCell.h */,
 				4369E5461A2830A500A914C4 /* NTAlbumCell.m */,
+				43F91E091A2EAAB8008F7115 /* NTView.h */,
+				43F91E0A1A2EAAB8008F7115 /* NTView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -409,6 +414,7 @@
 				43F52A971A26E93100245C07 /* NTSocialInterface.m in Sources */,
 				432DAA591A254C4E0090D777 /* NTAlbumsTableViewController.m in Sources */,
 				4369E5441A2826C000A914C4 /* NTNavigationBar.m in Sources */,
+				43F91E0B1A2EAAB8008F7115 /* NTView.m in Sources */,
 				432DAA601A254D960090D777 /* NTUser.m in Sources */,
 				432DAA701A263ECE0090D777 /* UIAlertView+NTShow.m in Sources */,
 				4369E53C1A2824D600A914C4 /* NTCollectionView.m in Sources */,

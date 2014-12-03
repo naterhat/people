@@ -10,6 +10,6 @@
 
 @class NTAlbum;
 
-@interface NTAlbumCollectionViewController : UICollectionViewController
+@interface NTAlbumCollectionViewController : UIViewController
 @property (nonatomic) NTAlbum *album;
 @end

@@ -33,9 +33,6 @@
     [containerView setBackgroundColor:[UIColor colorWithWhite:0 alpha:.5f]];
     _facebookContainerView = containerView;
     
-    // set background color
-    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_wood_texture.jpg"]]];
-    
     [self.buttons setValue:@YES forKeyPath:@"hidden"];
     
     [self login];

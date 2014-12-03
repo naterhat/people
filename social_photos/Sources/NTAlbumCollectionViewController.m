@@ -15,8 +15,9 @@
 #import "UIAlertView+NTShow.h"
 #import "NTImageCell.h"
 
-@interface NTAlbumCollectionViewController ()<UIAlertViewDelegate>
+@interface NTAlbumCollectionViewController ()<UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 @property (nonatomic) NSMutableArray *photos;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @end
 
 @implementation NTAlbumCollectionViewController
@@ -29,6 +30,10 @@ static NSString * const reuseIdentifier = @"cell";
     _photos = [NSMutableArray array];
     
     [self setTitle:self.album.name];
+    
+//    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+//        [self.collectionView registerClass:[NTImageCell class] forCellWithReuseIdentifier:reuseIdentifier];
+//    }
     
     // add upload button to the right of the navigation bar
     UIBarButtonItem *uploadButton = [[UIBarButtonItem alloc] initWithTitle:@"UPLOAD"
