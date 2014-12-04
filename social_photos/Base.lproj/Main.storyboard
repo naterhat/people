@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="9em-ZR-mpr">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="9em-ZR-mpr">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
@@ -34,7 +34,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dP4-Cl-0g1">
-                                <rect key="frame" x="201" y="103" width="201" height="43"/>
+                                <rect key="frame" x="201" y="103" width="201" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="201" id="7Jm-vI-DMA"/>
                                 </constraints>
@@ -51,11 +51,16 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="1s9-I9-EB6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="36" id="HjA-ZF-TyM"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="dP4-Cl-0g1" secondAttribute="bottom" constant="390" id="bkf-bu-nQ8"/>
                             <constraint firstItem="1s9-I9-EB6" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="etE-VP-0Vs"/>
                             <constraint firstItem="dP4-Cl-0g1" firstAttribute="top" secondItem="1s9-I9-EB6" secondAttribute="bottom" constant="37" id="ey9-fT-fuZ"/>
+                            <constraint firstItem="1s9-I9-EB6" firstAttribute="centerX" secondItem="dP4-Cl-0g1" secondAttribute="centerX" constant="-1" id="kDr-fQ-bUV"/>
                             <constraint firstItem="dP4-Cl-0g1" firstAttribute="trailing" secondItem="1s9-I9-EB6" secondAttribute="trailing" id="xxa-rv-QPH"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="xxa-rv-QPH"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="rUf-71-kOu"/>
                     <connections>
@@ -196,6 +201,7 @@
                     <connections>
                         <outlet property="collectionView" destination="xxQ-9y-E0S" id="URE-dp-Q2V"/>
                         <segue destination="w4i-Me-A8r" kind="show" identifier="photos" id="BBt-A4-LD9"/>
+                        <segue destination="EiB-c0-RQG" kind="show" identifier="camera" id="zng-w4-mpA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="50d-QK-9mv" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -250,7 +256,7 @@
             <objects>
                 <collectionViewController id="EiB-c0-RQG" customClass="NTCameraCollectionViewController" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="lHq-hE-Def" customClass="NTCollectionView">
-                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="Ovm-ag-iWr">
